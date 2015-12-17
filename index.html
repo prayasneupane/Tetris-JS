@@ -6,26 +6,22 @@
 </head>
 <body>
   <script src="js/create.js"></script>
+  <script src="js/Formula.js"></script>
+  <script src="js/MakeBlock.js"></script>
+ 
+  <script src="js/Start.js"></script>
 	
  <table border="1">  
 <td>
 <script language="JavaScript">
  // document.addEventListener("click",makeblocks())
-  var i=0;
 
-  var board=new create();
+  var hwidth = 9; //number of columns
+  var vheight = 15;  //number of rows
+   var board=new create();
   board.createboard();
-board.makeblock(0,2,0);
- 
-function Start()
-{
-  
-  function initiate(){
-  board.move();
-  }
-  setInterval(initiate,200);
-}
 
+  
   
  /// setInterval(makeblocks,2000);
 </script>
@@ -33,6 +29,7 @@ function Start()
 </table>
 
 <a href="javascript:Start();">Start Game </a> <br/>
+<a href="javascript:Pause();">Pause Game </a> <br/>
 
 </body>
 </html>
