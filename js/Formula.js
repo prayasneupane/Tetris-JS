@@ -15,9 +15,9 @@ this.blockformulas = [
    "images/green.png",
    "images/blue.png"
   ];
-// generates the image tag number from col and row
+//  generates the image tag number from col and row
   this.imagenumber=function(atcol, atrow) {
-   var imagenum = atrow*hwidth + atcol;
+   var imagenum = atrow*(hwidth) + atcol;
    return imagenum;
   }
 }
