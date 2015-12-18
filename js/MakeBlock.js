@@ -7,10 +7,11 @@ function MakeBlock()
   [0,0,0],
   [0,0,0],
   [0,0,0]
-  ];//array for storing current peice info
-	this.currentorigin=[0,0];//starting position 
-	this.currentorientation;//later for rotation
-	this.currenttype;//block type
+  ];//array for storing current 4 peices info imgno,colno,rowno
+	this.currentorigin=[0,0];//starting position  
+	this.currentorientation;//for rotation
+	this.currenttype;//block color type implement later
+	this.currenttypenum;//block type no of 7 pieces
 	this.dx=0;
 	var that=this;
 	this.makeblock=function(type, atcol, atrow) 
@@ -24,16 +25,17 @@ function MakeBlock()
 	   that.currentorientation = 0;
 	   var i;
 	   var block = formula.blockimages[type];
-	   var formulae = formula.blockformulas[type];
+	   var formulae = formula.blockformulas[type][0];
+	   console.log(formulae);
 	   var imagenum;
 	   var atc;
 	   var atr;
 	   
 	   for (i=0;i<=3;i++)
 	   {
-	   		atc = atcol + formulae[i][0];
+	   		atc = atcol + formulae[i][1];
 	   			
-	   		atr = atrow + formulae[i][1]; 
+	   		atr = atrow + formulae[i][0]; 
 	   		imagenum=formula.imagenumber(atc, atr);
 	   		//check for room to add block. If none, end game.
 	         tests = String(document.images[imagenum].src);
@@ -51,11 +53,94 @@ function MakeBlock()
 	         else
 	        {	
 	        	alert('Game over');
-	        	 break;
+	        	break;
 	        }
 	    }
 	   
 	}
+	this.rotate=function()
+	{
+		var savedorientation=that.currentorientation;
+		that.currentorientation=(that.currentorientation+1)%4;//change current orientatn
+		//should check whether new can be made
+		var i;
+	   var formulae = formula.blockformulas[that.currenttypenum][that.currentorientation];
+	   console.log(formulae);
+	   var atcol = that.currentorigin[0];
+	   var atrow = that.currentorigin[1];
+	   var atc;
+	   var atr;
+	   var tests;
+	   var newcurrent = Array();
+	   var saved = Array();
+	   var oksofar = true;
+	   for (i=0;i<=3;i++) 
+	   {
+         	atc = atcol + formulae[i][1];//new col no for peice as per rotation
+     	 	if (atc>=(hwidth))//check for right side
+     	  	{
+          		oksofar = false;
+          		break; 
+            }
+     		if (atc<0)//check for left side
+     		{
+          		oksofar = false;
+          		break;    
+            }
+	 	    atr = atrow + formulae[i][0];//new row no.
+     		if (atr>=(vheight-1)) //check at bottom
+     		{
+          		oksofar = false;
+          		break; 
+            }
+	 		newcurrent[i]=formula.imagenumber(atc, atr);//else assign new positn
+
+    	}
+    	if (oksofar==true)
+  		{
+   			for (i=0;i<=3;i++)
+   			{  
+       			saved[i] =that.current[i][0];
+       			document.images[that.current[i][0]].src = "images/blank.png"
+       	    }
+  		    // check for new positn
+   			for (i=0;i<=3;i++) 
+   			{
+         		tests = String(document.images[newcurrent[i]].src);
+         		found = tests.search("blank.png");
+         		if (found == -1)
+         		{  
+            		oksofar = false;
+            		break;     
+                }
+    		}
+   			if (oksofar==true)
+   			{
+     			for (i=0;i<=3;i++) 
+     			{
+					imagenum=newcurrent[i];
+         			document.images[imagenum].src = "images/blue.png"; 
+	 				that.current[i][0]=imagenum;
+	 				that.current[i][1] = atcol+formulae[i][1];
+	 				that.current[i][2] = atrow+formulae[i][0];
+      			}
+    		}
+   			else
+   			{  // restore from saved
+      			for (i=0;i<=3;i++)
+      			{
+      				document.images[saved[i]].src = "images/blue.png";
+      			}
+      		that.currentorientation = savedorientation;
+       		}
+    	}
+     	else
+     	{
+     		that.currentorientation = savedorientation;
+
+     	} 
+  		
+    }
 	this.movesideways=function(dir)
 	{
 		var i;
@@ -72,7 +157,12 @@ function MakeBlock()
 		for(i=0;i<=3;i++)
 	    {
 	    	imgno=that.current[i][0];//get imageno of all 4 boxes of a piece
-	    	
+	    	atr=that.current[i][2];
+	    	if(atr>=vheight-1)
+	    	{	
+	    		oksofar=false;
+	    		break;
+	    	}
 	    	if(dir==-1)
 	    	{//can be moved left?
 	    		if(imgno%hwidth==0)
@@ -87,7 +177,7 @@ function MakeBlock()
 	    	}
 	    	if(dir==1)//right
 	    	{
-	    		if(imgno!=0&&imgno%(hwidth)==8)
+	    		if(imgno%(hwidth)==8)
 	    		{
 	    			oksofar=false;
 	    			break; 
@@ -157,68 +247,69 @@ function MakeBlock()
 	    var newcurrent = new Array();//to store imagenum
 	    var saved = new Array();
 	    var found;
-	   
-	    for (i=0; i<=3; i++) 
-	    {
-	      imgno = that.current[i][0];
-	      atc = that.current[i][1];
-	      atr = that.current[i][2];
-	 
-	      if (atr>=(vheight-1)) 
-	      { //at  bottom already
-	      //need to signal start of new block
 	    
-	        var type=Math.floor(Math.random()*6);
-	        var col=Math.floor(Math.random()*5);
-	        
-	        that.makeblock(type,col,0);
-	        oksofar = false;
-	        break;
-	      }
-	      newcurrent[i] = formula.imagenumber(atc,atr+1);
-	    }
-	    if (oksofar) 
+		for (i=0; i<=3; i++) 
 	    {
-	      for (i=0;i<=3; i++) 
-	      {  //saved image nums & blank out current piece
-	      saved[i] = that.current[i][0];
-	      document.images[that.current[i][0]].src = "images/blank.png";
-	      } // ends for loop
-	      for (i=0; i<=3; i++) 
-	      { //check if any blocking
-	                  tests = String(document.images[newcurrent[i]].src);
-	                  found = tests.search("blank.png");
-	                  if (found == -1) 
-	                  {  // meaning it was not found
-	                    oksofar = false;
-	                    break;
-	                  }  
-	      } 
-	      if (oksofar)
-	      {
-	      for (i=0;i<=3; i++)
-	      {
-	       document.images[newcurrent[i]].src = "images/blue.png";
-	       that.current[i][0] = newcurrent[i];
-	       that.current[i][2]++; // y increases; x stays the same
-	       
-	      } 
-	        that.currentorigin[1]++;//increase row
-	      }  
-	      else
-	      {
-	        for (i=0;i<=3; i++) 
-	        {
-	        document.images[saved[i]].src = "images/blue.png";
-	      
-	        // signal need to start new falling piece
-	        }
-	        var ty=Math.floor(Math.random()*6);
-	        var co=Math.floor(Math.random()*5);
-	   
-	        that.makeblock(ty,co,0); 
-	       } 
+	      	imgno = that.current[i][0];
+	      	atc = that.current[i][1];
+	      	atr = that.current[i][2];
+	 
+	      	if (atr>=(vheight-1)) 
+	      	{ //at  bottom already
+	      	//need to signal start of new block
+	    
+	        	var type=Math.floor(Math.random()*6);
+	        	var col=Math.floor(Math.random()*5);
+	        
+	        	that.makeblock(type,col,0);
+	        	oksofar = false;
+	        	break;
+	      	}
+	      	newcurrent[i] = formula.imagenumber(atc,atr+1);
 	    }
+	    if (oksofar==true) 
+	    {
+	      	for (i=0;i<=3; i++) 
+	      	{  //saved image nums & blank out current piece
+	      		saved[i] = that.current[i][0];
+	      		document.images[that.current[i][0]].src = "images/blank.png";
+	      	} 
+	      	for (i=0; i<=3; i++) 
+	      	{ //check if any blocking
+	            tests = String(document.images[newcurrent[i]].src);
+	            found = tests.search("blank.png");
+	            if (found == -1) 
+	            {  
+	                oksofar = false;
+                    break;
+                }  
+	        } 
+	        if (oksofar==true)
+	      	{
+	      		for (i=0;i<=3; i++)
+	      		{
+	       			document.images[newcurrent[i]].src = "images/blue.png";
+	       			that.current[i][0] = newcurrent[i];
+	       			that.current[i][2]++; // y increases; x stays the same
+	       
+	      		} 
+	        	that.currentorigin[1]++;//increase row used for rotation
+	      	}
+	      
+	    	else
+		    {
+		        for (i=0;i<=3; i++) 
+		        {
+		        	document.images[saved[i]].src = "images/blue.png";
+		      
+		        	//  start new falling piece
+		        }
+		        var ty=Math.floor(Math.random()*6);
+		        var co=Math.floor(Math.random()*5);
+		   
+		        that.makeblock(ty,co,0); 
+		    } 
+		}   
     }
 
 }

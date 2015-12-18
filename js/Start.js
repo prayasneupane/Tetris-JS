@@ -2,7 +2,7 @@ function Start()
 {
 	
 	 var make=new MakeBlock();
-  make.makeblock(3,2,0);
+  make.makeblock(0,2,0);
    document.onkeydown = checkKey;
   		function checkKey(e)
   		{
@@ -11,9 +11,11 @@ function Start()
 
     	if (e.keyCode == '38') {
         // up arrow
+        make.rotate();
     	}
     	else if (e.keyCode == '40') {
         // down arrow
+        make.movedown();
     	}
     	else if (e.keyCode == '37') {
        // left arrow
@@ -35,6 +37,6 @@ function Start()
   		make.movedown();
   
  	}
- setInterval(movedown,2000);
+ setInterval(movedown,500);
 	
 }

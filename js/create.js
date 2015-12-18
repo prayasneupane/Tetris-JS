@@ -16,9 +16,7 @@ for (i=0; i<vheight; i++) {
   }
 }
 
- //make a block of type type at column atcol and at row atrow
-//used to start off blocks
-  
+ 
  
 }
 
