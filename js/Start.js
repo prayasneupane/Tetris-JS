@@ -37,6 +37,6 @@ function Start()
   		make.movedown();
   
  	}
- setInterval(movedown,500);
+ setInterval(movedown,2000);
 	
 }

@@ -48,7 +48,9 @@ this.blockformulas = [
   
    "images/red.png",
    "images/green.png",
-   "images/blue.png"
+   "images/blue.png",
+   "images/black.png",
+   "images/brinjal.png",
   ];
 //  generates the image tag number from col and row
   this.imagenumber=function(atcol, atrow) {

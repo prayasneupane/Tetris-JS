@@ -21,12 +21,12 @@ function MakeBlock()
 	   that.dx=1;
 	   that.currentorigin = [atcol, atrow];
 	   that.currenttypenum = type;
-	   that.currenttype = formula.blockimages[2];
+	   var color=Math.floor(Math.random()*5);
+	   that.currenttype = formula.blockimages[color];
 	   that.currentorientation = 0;
 	   var i;
 	   var block = formula.blockimages[type];
 	   var formulae = formula.blockformulas[type][0];
-	   console.log(formulae);
 	   var imagenum;
 	   var atc;
 	   var atr;
@@ -44,7 +44,7 @@ function MakeBlock()
 	         
 	         if (no>=0) 
 	        {
-	            document.images[imagenum].src = "images/blue.png"; 
+	            document.images[imagenum].src = that.currenttype; 
 	    	    that.current[i][0]=imagenum;
 	    	  	that.current[i][1] = atc;
 	     		that.current[i][2] = atr;
@@ -65,7 +65,6 @@ function MakeBlock()
 		//should check whether new can be made
 		var i;
 	   var formulae = formula.blockformulas[that.currenttypenum][that.currentorientation];
-	   console.log(formulae);
 	   var atcol = that.currentorigin[0];
 	   var atrow = that.currentorigin[1];
 	   var atc;
@@ -119,7 +118,7 @@ function MakeBlock()
      			for (i=0;i<=3;i++) 
      			{
 					imagenum=newcurrent[i];
-         			document.images[imagenum].src = "images/blue.png"; 
+         			document.images[imagenum].src = that.currenttype; 
 	 				that.current[i][0]=imagenum;
 	 				that.current[i][1] = atcol+formulae[i][1];
 	 				that.current[i][2] = atrow+formulae[i][0];
@@ -129,7 +128,7 @@ function MakeBlock()
    			{  // restore from saved
       			for (i=0;i<=3;i++)
       			{
-      				document.images[saved[i]].src = "images/blue.png";
+      				document.images[saved[i]].src = that.currenttype;
       			}
       		that.currentorientation = savedorientation;
        		}
@@ -213,7 +212,7 @@ function MakeBlock()
 	    	{
 	    		for(i=0;i<=3;i++)
 	    		{
-	    			document.images[newcurrent[i]].src="images/blue.png";
+	    			document.images[newcurrent[i]].src=that.currenttype;
 	    			that.current[i][0] = newcurrent[i];//imgno
 	    		
                     that.current[i][1] = that.current[i][1]+dir;//column no 
@@ -226,7 +225,7 @@ function MakeBlock()
 	    	{
 	    		for(i=0;i<=3;i++)
 	    		{
-	    			document.images[saved[i]].src="images/blue.png";//restore can't be moved sideways
+	    			document.images[saved[i]].src=that.currenttype;//restore can't be moved sideways
 	    		}
 	    	
 
@@ -260,7 +259,8 @@ function MakeBlock()
 	    
 	        	var type=Math.floor(Math.random()*6);
 	        	var col=Math.floor(Math.random()*5);
-	        
+
+				that.checkRowFilled(atr);        
 	        	that.makeblock(type,col,0);
 	        	oksofar = false;
 	        	break;
@@ -288,7 +288,7 @@ function MakeBlock()
 	      	{
 	      		for (i=0;i<=3; i++)
 	      		{
-	       			document.images[newcurrent[i]].src = "images/blue.png";
+	       			document.images[newcurrent[i]].src = that.currenttype;
 	       			that.current[i][0] = newcurrent[i];
 	       			that.current[i][2]++; // y increases; x stays the same
 	       
@@ -300,16 +300,68 @@ function MakeBlock()
 		    {
 		        for (i=0;i<=3; i++) 
 		        {
-		        	document.images[saved[i]].src = "images/blue.png";
+		        	document.images[saved[i]].src = that.currenttype;
 		      
 		        	//  start new falling piece
 		        }
 		        var ty=Math.floor(Math.random()*6);
 		        var co=Math.floor(Math.random()*5);
-		   
-		        that.makeblock(ty,co,0); 
+		        for(i=0;i<=3;i++)
+		        {
+		        	atr = that.current[i][2];
+					that.checkRowFilled(atr);			   
+		        	
+		    	}
+		    	that.makeblock(ty,co,0); 
 		    } 
 		}   
     }
 
+    this.checkRowFilled=function(atr)
+    {
+    	//var i=vheight-1;
+    	var i=atr;
+    	var test;
+    	var found;
+    	var imagenum;
+
+    	while(i>=0)
+    	{
+    		var filledcount=0;//counting blank images
+    		for(var j=0;j<hwidth;j++)
+    		{
+    			imagenum=formula.imagenumber(j,i);
+    			test=String(document.images[imagenum].src);
+    			found=test.search("blank.png");
+    			if(found==-1)//not found
+    				filledcount++;
+    			
+    		}
+    		if(filledcount==hwidth)
+    		{
+    			that.removeLine(i);
+    		}
+    		else
+    		{
+    			i--;
+    		}
+    	}
+    }
+    this.removeLine=function(lineNo)
+    {
+    	var col;
+    	var rowUp;
+    	var imgno;
+    	var imgnoUp;
+    	for(var i=lineNo;i>0;i--)
+    	{
+    		for(var j=0;j<hwidth;j++)
+    		{
+    			var imgno=formula.imagenumber(j,i);
+    			var imgnoUp=formula.imagenumber(j,i-1);//tyo bhanda mathi ko row ko imgno
+    			//replace current row to remove by upper ones
+    			document.images[imgno].src=document.images[imgnoUp].src;
+    		}
+    	}
+    } 
 }
