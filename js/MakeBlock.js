@@ -2,6 +2,7 @@ function MakeBlock()
 {
 	
 	var formula=new Formula();
+	this.num=[];	
 	this.current=[
   [0,0,0],
   [0,0,0],
@@ -10,18 +11,50 @@ function MakeBlock()
   ];//array for storing current 4 peices info imgno,colno,rowno
 	this.currentorigin=[0,0];//starting position  
 	this.currentorientation;//for rotation
-	this.currenttype;//block color type implement later
+	this.currenttype;//block color type 
 	this.currenttypenum;//block type no of 7 pieces
 	this.dx=0;
+	this.nexttypenum;
+	this.colortype;
 	var that=this;
-	this.makeblock=function(type, atcol, atrow) 
+	this.makeBlock=function(type)
+	{
+		that.nexttypenum=type;
+		var formulae=formula.blockformulas[type][0];
+		that.colortype=Math.floor(Math.random()*5);
+		var color = formula.blockimages[that.colortype];
+		for (i=0;i<=3;i++)
+	   {
+	   		var atc =  formulae[i][1];
+	   			
+	   		var atr = formulae[i][0]; 
+	   		imagenum=formula.imagenumberdiff(atc, atr)+135;
+	   		that.num[i]=imagenum;
+	   	
+
+	   		document.images[imagenum].src = color;
+
+
+	  	}
+	}
+	this.remove=function()
+	{
+		for(i=0;i<=3;i++)
+		{
+			
+			
+			document.images[that.num[i]].src = "images/blank.png";
+		}
+	}
+
+	this.makeblock=function(type, atcol, atrow,color) 
 	{
 	   var no;
 	   var tests;
 	   that.dx=1;
 	   that.currentorigin = [atcol, atrow];
 	   that.currenttypenum = type;
-	   var color=Math.floor(Math.random()*5);
+	  
 	   that.currenttype = formula.blockimages[color];
 	   that.currentorientation = 0;
 	   var i;
@@ -260,8 +293,10 @@ function MakeBlock()
 	        	var type=Math.floor(Math.random()*6);
 	        	var col=Math.floor(Math.random()*5);
 
-				that.checkRowFilled(atr);        
-	        	that.makeblock(type,col,0);
+				that.checkRowFilled(atr);
+	        	that.makeblock(that.nexttypenum,col,0,that.colortype);
+				that.remove();
+				that.makeBlock(type);        
 	        	oksofar = false;
 	        	break;
 	      	}
@@ -312,7 +347,10 @@ function MakeBlock()
 					that.checkRowFilled(atr);			   
 		        	
 		    	}
-		    	that.makeblock(ty,co,0); 
+		    	that.makeblock(that.nexttypenum,co,0,that.colortype); 
+		    	that.remove();
+		    	that.makeBlock(ty);
+		    	
 		    } 
 		}   
     }

@@ -57,4 +57,10 @@ this.blockformulas = [
    var imagenum = atrow*(hwidth) + atcol;
    return imagenum;
   }
+  this.imagenumberdiff=function(atcol, atrow) {
+   var imagenum = atrow*(4) + atcol;
+   return imagenum;
+  }
+  
+
 }

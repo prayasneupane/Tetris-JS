@@ -1,8 +1,15 @@
+var id;
+ var make=new MakeBlock();
+ 
+  
+  
+ 
 function Start()
 {
 	
-	 var make=new MakeBlock();
-  make.makeblock(0,2,0);
+  make.makeblock(0,2,0,1);
+  make.makeBlock(3);
+  
    document.onkeydown = checkKey;
   		function checkKey(e)
   		{
@@ -37,6 +44,14 @@ function Start()
   		make.movedown();
   
  	}
- setInterval(movedown,2000);
+ id=setInterval(make.movedown,1000);
 	
+}
+function Pause()
+{
+window.clearInterval(id);
+}
+function Resume()
+{
+   id=setInterval(make.movedown,1000);
 }
