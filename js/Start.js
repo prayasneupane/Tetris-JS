@@ -7,7 +7,7 @@ var id;
 function Start()
 {
 	
-  make.makeblock(0,2,0,1);
+  make.makeblock(1,2,0,1);
   make.makeBlock(3);
   
    document.onkeydown = checkKey;

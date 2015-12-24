@@ -1,35 +1,75 @@
 <html>
 <head>
   <style>
-  
-  </style>
+  table
+  {
+    border-collapse: collapse;
+  }
+  td{
+    padding:0px;
+  }
+  .next
+  {
+    position: absolute;
+    left:400px;
+    top:100px;
+  }
+  img
+  {
+    height:25px;
+    width:25px;
+  }
+  #display-score
+  {
+    position: absolute;
+    left:400px;
+    top:250px;
+    border:1px solid black;
+    width:100px;
+    height:50px;
+    text-align: center;
+    line-height:50px;
+  }
+ </style>
 </head>
 <body>
+  <div id="display-score"></div>
   <script src="js/create.js"></script>
   <script src="js/Formula.js"></script>
   <script src="js/MakeBlock.js"></script>
- 
+  
   <script src="js/Start.js"></script>
 	
  <table border="1">  
 <td>
 <script language="JavaScript">
- // document.addEventListener("click",makeblocks())
+ 
 
   var hwidth = 9; //number of columns
   var vheight = 15;  //number of rows
    var board=new create();
   board.createboard();
-
+ 
   
   
  /// setInterval(makeblocks,2000);
+</script>
+
+</td>
+</table>
+
+ <table class="next" border="1"> 
+  <td>
+    <script language="JavaScript">
+
+    board.makeShowTable();
 </script>
 </td>
 </table>
 
 <a href="javascript:Start();">Start Game </a> <br/>
 <a href="javascript:Pause();">Pause Game </a> <br/>
+<a href="javascript:Resume();">Resume Game </a> <br/>
 
 </body>
 </html>

@@ -17,10 +17,13 @@ function MakeBlock()
 	this.nexttypenum;
 	this.colortype;
 	var that=this;
+	this.filled=false;
+	this.line=[];
 	this.makeBlock=function(type)
 	{
+		var type=1;
 		that.nexttypenum=type;
-		var formulae=formula.blockformulas[type][0];
+		var formulae=formula.blockformulas[1][0];
 		that.colortype=Math.floor(Math.random()*5);
 		var color = formula.blockimages[that.colortype];
 		for (i=0;i<=3;i++)
@@ -54,7 +57,7 @@ function MakeBlock()
 	   that.dx=1;
 	   that.currentorigin = [atcol, atrow];
 	   that.currenttypenum = type;
-	  
+	  	
 	   that.currenttype = formula.blockimages[color];
 	   that.currentorientation = 0;
 	   var i;
@@ -63,7 +66,7 @@ function MakeBlock()
 	   var imagenum;
 	   var atc;
 	   var atr;
-	   
+	  
 	   for (i=0;i<=3;i++)
 	   {
 	   		atc = atcol + formulae[i][1];
@@ -267,62 +270,135 @@ function MakeBlock()
 	    }
 
 	}
+	this.callNextPiece=function()
+	{
+			var type=Math.floor(Math.random()*6);
+	        	var col=Math.floor(Math.random()*5);
+	        	that.makeblock(that.nexttypenum,col,0,that.colortype);
+				that.remove();
+				that.makeBlock(type);
+	}
 	
 	this.movedown=function()
 	{
 		var i;
 	    var tests;
-	    var oksofar = true;
+	    var oksofar=true;
 	    var imgno;
 	    var atc;
 	    var atr;
 	    var newcurrent = new Array();//to store imagenum
 	    var saved = new Array();
 	    var found;
+	    var mine=[];
+	    var temp=[];
 	    
 		for (i=0; i<=3; i++) 
 	    {
 	      	imgno = that.current[i][0];
 	      	atc = that.current[i][1];
 	      	atr = that.current[i][2];
-	 
+	 		
 	      	if (atr>=(vheight-1)) 
 	      	{ //at  bottom already
 	      	//need to signal start of new block
+	      		oksofar=false;
+	    		for(var j=0;j<=3;j++)
+	    		{
+	    		 mine[j]=that.current[j][2]; 
+				}
+				var minereduced = mine.reduce(function(a,b)  //remove duplicate row no.
+				{
+    				if (a.indexOf(b) < 0 ) a.push(b);
+    				return a;
+  				},[]);
+				
 	    
-	        	var type=Math.floor(Math.random()*6);
-	        	var col=Math.floor(Math.random()*5);
+	        	
+	        	for(var k=0;k<minereduced.length;k++)
+	        	{
+	        		var attr=minereduced[k];
+	        		
+					that.checkRowFilled(attr);
+				}
+				
+				
+				if(that.line.length!=0)
+				{	
+					that.fadeout();
+					var tid=setTimeout(function()
+    				{
+    				that.removeLine();
 
-				that.checkRowFilled(atr);
-	        	that.makeblock(that.nexttypenum,col,0,that.colortype);
-				that.remove();
-				that.makeBlock(type);        
-	        	oksofar = false;
+    		
+    				
+    				},500);
+				}
+				else
+				{
+					that.callNextPiece();	 
+				
+				}      
+	        	
 	        	break;
+	        	
 	      	}
 	      	newcurrent[i] = formula.imagenumber(atc,atr+1);
+	      	temp[i] = formula.imagenumber(atc,atr+1);
+	      	
 	    }
+
 	    if (oksofar==true) 
 	    {
-	      	for (i=0;i<=3; i++) 
+
+	      /*	for (i=0;i<=3; i++) 
 	      	{  //saved image nums & blank out current piece
 	      		saved[i] = that.current[i][0];
 	      		document.images[that.current[i][0]].src = "images/blank.png";
-	      	} 
-	      	for (i=0; i<=3; i++) 
+	      	} */
+	      	var match=0;
+	      	for (i=4; i>=0; i--) 
 	      	{ //check if any blocking
-	            tests = String(document.images[newcurrent[i]].src);
+	      		for(var j=0;j<=3;j++)
+	      		{
+
+	      		if(temp[i]==that.current[j][0])
+	      		{
+	      			var index=temp.indexOf(temp[i]);
+	      			
+	      				temp.splice(index,1);
+	      				 match++;
+	      			
+	      			
+	      			
+	      			break;
+	      		}
+	      		}
+	      		console.log(index);
+	      		console.log(temp);
+	      		
+	        }
+	          // debugger;
+	           	for(i=0;i<temp.length;i++)
+	           	{
+	            tests = String(document.images[temp[i]].src);
 	            found = tests.search("blank.png");
 	            if (found == -1) 
 	            {  
 	                oksofar = false;
-                    break;
-                }  
-	        } 
+                   // break;
+                }
+                } 
+	        temp=[];
+	        
 	        if (oksofar==true)
-	      	{
+	      	{		for (i=0;i<=3; i++) 
+	      	{  //saved image nums & blank out current piece
+	      		saved[i] = that.current[i][0];
+	      		document.images[that.current[i][0]].src = "images/blank.png";
+	      	}
 	      		for (i=0;i<=3; i++)
-	      		{
+	      		{	
 	       			document.images[newcurrent[i]].src = that.currenttype;
 	       			that.current[i][0] = newcurrent[i];
 	       			that.current[i][2]++; // y increases; x stays the same
@@ -333,23 +409,42 @@ function MakeBlock()
 	      
 	    	else
 		    {
-		        for (i=0;i<=3; i++) 
+		        /*for (i=0;i<=3; i++) 
 		        {
 		        	document.images[saved[i]].src = that.currenttype;
 		      
 		        	//  start new falling piece
-		        }
-		        var ty=Math.floor(Math.random()*6);
-		        var co=Math.floor(Math.random()*5);
-		        for(i=0;i<=3;i++)
-		        {
-		        	atr = that.current[i][2];
-					that.checkRowFilled(atr);			   
+		        }*/
+		        
+				for(var j=0;j<=3;j++)
+	    		{
+	    		 mine[j]=that.current[j][2]; 
+				}
+				var minereduced = mine.reduce(function(a,b)  //remove duplicate row no.
+				{
+    				if (a.indexOf(b) < 0 ) a.push(b);
+    				return a;
+  				},[]);
+				for(var k=0;k<minereduced.length;k++)
+				{
+					atr=minereduced[k];
+					that.checkRowFilled(atr);
+				}
+				if(that.line.length!=0)
+				{	
+					that.fadeout();
+					var tid=setTimeout(function()
+    				{
+    				that.removeLine();
+
+    				},500);
+    				that.stop=false;
+				}
+				else
+				{	
+					that.callNextPiece();
+				}      
 		        	
-		    	}
-		    	that.makeblock(that.nexttypenum,co,0,that.colortype); 
-		    	that.remove();
-		    	that.makeBlock(ty);
 		    	
 		    } 
 		}   
@@ -358,17 +453,16 @@ function MakeBlock()
     this.checkRowFilled=function(atr)
     {
     	//var i=vheight-1;
-    	var i=atr;
+    	//var i=atr;
     	var test;
     	var found;
     	var imagenum;
-
-    	while(i>=0)
-    	{
+    
+    	
     		var filledcount=0;//counting blank images
     		for(var j=0;j<hwidth;j++)
     		{
-    			imagenum=formula.imagenumber(j,i);
+    			imagenum=formula.imagenumber(j,atr);
     			test=String(document.images[imagenum].src);
     			found=test.search("blank.png");
     			if(found==-1)//not found
@@ -376,22 +470,45 @@ function MakeBlock()
     			
     		}
     		if(filledcount==hwidth)
-    		{
-    			that.removeLine(i);
+    		{	
+    			that.line.push(atr);
+
+    			
     		}
-    		else
-    		{
-    			i--;
-    		}
+    		
+    }
+    this.fadeout=function()
+    {	
+    	
+    	
+    	var imgno;
+    	for(var k=0;k<that.line.length;k++)
+    	{
+    	for(var i=0;i<hwidth;i++)
+    	{
+    		imgno=formula.imagenumber(i,that.line[k]);
+    		document.images[imgno].src="images/animation.gif";
+
+    	}
     	}
     }
-    this.removeLine=function(lineNo)
-    {
+    this.removeLine=function()
+    {	
     	var col;
     	var rowUp;
     	var imgno;
     	var imgnoUp;
-    	for(var i=lineNo;i>0;i--)
+    	var temp=[];
+    			var temp = that.line.reduce(function(a,b)  //remove duplicate row no.
+				{
+    				if (a.indexOf(b) < 0 ) a.push(b);
+    				return a;
+  				},[]);
+				
+    	//debugger;
+    	for (var k=0;k<temp.length;k++)
+    	{
+    	for(var i=temp[k];i>0;i--)
     	{
     		for(var j=0;j<hwidth;j++)
     		{
@@ -401,5 +518,7 @@ function MakeBlock()
     			document.images[imgno].src=document.images[imgnoUp].src;
     		}
     	}
+    	}
+    	that.line=[];
     } 
 }
