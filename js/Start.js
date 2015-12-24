@@ -7,8 +7,8 @@ var id;
 function Start()
 {
 	
-  make.makeblock(1,2,0,1);
-  make.makeBlock(3);
+  make.makeCurrentBlock(1,2,0,1);
+  make.makeNextBlock(3);
   
    document.onkeydown = checkKey;
   		function checkKey(e)

@@ -17,11 +17,11 @@ function MakeBlock()
 	this.nexttypenum;
 	this.colortype;
 	var that=this;
-	this.filled=false;
+	
 	this.line=[];
 	this.newcurrent=[];
-	this.temp=[];
-	this.makeBlock=function(type)
+	
+	this.makeNextBlock=function(type)
 	{
 		
 		that.nexttypenum=type;
@@ -42,7 +42,7 @@ function MakeBlock()
 
 	  	}
 	}
-	this.remove=function()
+	this.removeNextBlock=function()
 	{
 		for(i=0;i<=3;i++)
 		{
@@ -52,7 +52,7 @@ function MakeBlock()
 		}
 	}
 
-	this.makeblock=function(type, atcol, atrow,color) 
+	this.makeCurrentBlock=function(type, atcol, atrow,color) 
 	{
 	   var no;
 	   var tests;
@@ -99,187 +99,158 @@ function MakeBlock()
 	}
 	this.rotate=function()
 	{
-		var savedorientation=that.currentorientation;
+		
 		that.currentorientation=(that.currentorientation+1)%4;//change current orientatn
-		//should check whether new can be made
-		var i;
-	   var formulae = formula.blockformulas[that.currenttypenum][that.currentorientation];
-	   var atcol = that.currentorigin[0];
-	   var atrow = that.currentorigin[1];
-	   var atc;
-	   var atr;
-	   var tests;
-	   var newcurrent = Array();
-	   var saved = Array();
-	   var oksofar = true;
-	   for (i=0;i<=3;i++) 
+		
+	   if(that.checkCollisionRotate()!=true)
 	   {
+	  
+	 		that.calcNewPosRotate();
+ 				   	
+    	
+  		
+   			
+   			if (that.checkCollision()!=true)
+   			{	
+   				that.blankCurrPice();
+     			that.moveToNextPosRotate();
+    		}
+   		}	
+    	
+     	
+    }
+    this.calcNewPosRotate=function()
+    {	
+    	var formulae = formula.blockformulas[that.currenttypenum][that.currentorientation];
+	    var atcol = that.currentorigin[0];
+	    var atrow = that.currentorigin[1];
+	    for(i=0;i<=3;i++)
+	    {
+		    var atc = atcol + formulae[i][1];
+		    var atr = atrow + formulae[i][0];
+	    	that.newcurrent[i]=formula.imagenumber(atc, atr);
+	    }
+
+    }
+    this.checkCollisionRotate=function()
+    {
+    	var formulae = formula.blockformulas[that.currenttypenum][that.currentorientation];
+	    var atcol = that.currentorigin[0];
+	    var atrow = that.currentorigin[1];
+    	for (i=0;i<=3;i++) 
+	    {
          	atc = atcol + formulae[i][1];//new col no for peice as per rotation
      	 	if (atc>=(hwidth))//check for right side
      	  	{
-          		oksofar = false;
+          		return true;
           		break; 
             }
      		if (atc<0)//check for left side
      		{
-          		oksofar = false;
+          		return true;
           		break;    
             }
 	 	    atr = atrow + formulae[i][0];//new row no.
      		if (atr>=(vheight-1)) //check at bottom
      		{
-          		oksofar = false;
+          		return true;
           		break; 
             }
-	 		newcurrent[i]=formula.imagenumber(atc, atr);//else assign new positn
-
-    	}
-    	if (oksofar==true)
-  		{
-   			for (i=0;i<=3;i++)
-   			{  
-       			saved[i] =that.current[i][0];
-       			document.images[that.current[i][0]].src = "images/blank.png"
-       	    }
-  		    // check for new positn
-   			for (i=0;i<=3;i++) 
-   			{
-         		tests = String(document.images[newcurrent[i]].src);
-         		found = tests.search("blank.png");
-         		if (found == -1)
-         		{  
-            		oksofar = false;
-            		break;     
-                }
-    		}
-   			if (oksofar==true)
-   			{
-     			for (i=0;i<=3;i++) 
-     			{
-					imagenum=newcurrent[i];
-         			document.images[imagenum].src = that.currenttype; 
-	 				that.current[i][0]=imagenum;
-	 				that.current[i][1] = atcol+formulae[i][1];
-	 				that.current[i][2] = atrow+formulae[i][0];
-      			}
-    		}
-   			else
-   			{  // restore from saved
-      			for (i=0;i<=3;i++)
-      			{
-      				document.images[saved[i]].src = that.currenttype;
-      			}
-      		that.currentorientation = savedorientation;
-       		}
-    	}
-     	else
+    }	}
+    this.moveToNextPosRotate=function()
+    {
+    	var formulae = formula.blockformulas[that.currenttypenum][that.currentorientation];
+    	var atcol = that.currentorigin[0];
+	    var atrow = that.currentorigin[1];
+    	for (i=0;i<=3;i++) 
      	{
-     		that.currentorientation = savedorientation;
-
-     	} 
-  		
+			imagenum=that.newcurrent[i];
+         	document.images[imagenum].src = that.currenttype; 
+	 		that.current[i][0]=imagenum;
+	 		that.current[i][1] = atcol+formulae[i][1];
+	 		that.current[i][2] = atrow+formulae[i][0];
+      	}
     }
 	this.movesideways=function(dir)
 	{
 		var i;
-		var test;
-		var imgno;
-		var atc;
-		var atr;
-		var newcurrent=new Array();
-		var saved=new Array;
-		var found;
-		var oksofar=true;
-	
 		
+		if(that.checkAtBottom()!=true)
+		{
+			
+		if(that.checkCollisionSideways(dir)!=true)
+		{
+		
+	    	
+	    	if(that.checkCollision()!=true)//no collision
+	    	{	
+	    		that.calcNewPosSide(dir);
+	    		that.blankCurrPice();
+	    		that.moveToNextPosSide(dir);
+	    		that.currentorigin[0]+=dir;//change column no
+	    	}
+	    	
+	    }
+	    }
+
+	}
+	this.checkCollisionSideways=function(dir)
+	{
 		for(i=0;i<=3;i++)
 	    {
-	    	imgno=that.current[i][0];//get imageno of all 4 boxes of a piece
-	    	atr=that.current[i][2];
-	    	if(atr>=vheight-1)
-	    	{	
-	    		oksofar=false;
-	    		break;
-	    	}
+	    	var imgno=that.current[i][0];//get imageno of all 4 boxes of a piece
+	    	
+	    	
 	    	if(dir==-1)
 	    	{//can be moved left?
 	    		if(imgno%hwidth==0)
 	    		{
-	    			oksofar=false;//can't be moved left
-	    			
-	        
-	    			
-	    			
+	    			return true;//can't be moved left
 	    			break;
 	    		}
 	    	}
 	    	if(dir==1)//right
 	    	{
-	    		if(imgno%(hwidth)==8)
+	    		if(imgno%(hwidth)==hwidth-1)
 	    		{
-	    			oksofar=false;
+	    			return true;
 	    			break; 
 	    		}
 	    	}
+	    }	
+	}
+	 this.calcNewPosSide=function(dir)
+	 {
+	 	for(i=0;i<=3;i++)
+	    {
+	    	var imgno=that.current[i][0];//get imageno of all 4 boxes of a piece
 	    	
-	    	
-	    	newcurrent[i]=imgno+dir;//new imgno for all 4 blocks acording as shift
+	    	that.newcurrent[i]=imgno+dir;//new imgno for all 4 blocks acording as shift
 	    
 
 	    }
-	    if(oksofar==true) //no collision sideways
+	 }   			
+	        
+	 this.moveToNextPosSide=function(dir)
+	 {
+	 	for(i=0;i<=3;i++)
 	    {
-	    	//save currrent peice imgno 
-	    	for(i=0;i<=3;i++)
-	    	{
-	    		saved[i]=that.current[i][0];
-	    		document.images[that.current[i][0]].src="images/blank.png";
-	    	}
-	    	//test collision 
-	    	for(i=0;i<=3;i++)
-	    	{
-	    		//check new position is filled or not
-	    		test=String(document.images[newcurrent[i]].src);
-	    		found=test.search("blank.png");
-	    		if (found==-1)//no-room to add block colision detected
-	    		{
-	    			oksofar=false;
-	    			break;
-	    		}
-	    	}
-	    	if(oksofar)//no collision
-	    	{
-	    		for(i=0;i<=3;i++)
-	    		{
-	    			document.images[newcurrent[i]].src=that.currenttype;
-	    			that.current[i][0] = newcurrent[i];//imgno
+	    	document.images[that.newcurrent[i]].src=that.currenttype;
+	    	that.current[i][0] = that.newcurrent[i];//imgno
 	    		
-                    that.current[i][1] = that.current[i][1]+dir;//column no 
+            that.current[i][1] = that.current[i][1]+dir;//column no 
                   
 
-	    		}
-	    		that.currentorigin[0]+=dir;//change column no
-	    	}
-	    	else
-	    	{
-	    		for(i=0;i<=3;i++)
-	    		{
-	    			document.images[saved[i]].src=that.currenttype;//restore can't be moved sideways
-	    		}
-	    	
-
-	    	}
-
 	    }
-
-	}
+	 }   			
+	    			
 	this.callNextPiece=function()
 	{
-			var type=Math.floor(Math.random()*6);
-	        	var col=Math.floor(Math.random()*5);
-	        	that.makeblock(that.nexttypenum,col,0,that.colortype);
-				that.remove();
-				that.makeBlock(type);
+		var type=Math.floor(Math.random()*6);
+	    var col=Math.floor(Math.random()*5);
+	    that.makeCurrentBlock(that.nexttypenum,col,0,that.colortype);
+		that.removeNextBlock();
+		that.makeNextBlock(type);
 	}
 	this.checkAtBottom=function()
 
@@ -297,7 +268,7 @@ function MakeBlock()
 	      	}
 	    }
 	}
-	this.calcNewPos=function()
+	this.calcNewPosDown=function()
 	{
 		for (i=0; i<=3; i++) 
 	    {
@@ -327,14 +298,17 @@ function MakeBlock()
 			that.checkRowFilled(attr);
 		}
 	}
-	        		
-	this.moveToNextPos=function()
+	this.blankCurrPice=function()
 	{
-			for (i=0;i<=3; i++) 
+		for (i=0;i<=3; i++) 
 	      	{  // blank out current piece
 	      		
 	      		document.images[that.current[i][0]].src = "images/blank.png";
 	      	}
+	}    		
+	this.moveToNextPosDown=function()
+	{
+			
 	      	for (i=0;i<=3; i++)
 	      	{	
 	       		document.images[that.newcurrent[i]].src = that.currenttype;
@@ -345,45 +319,46 @@ function MakeBlock()
 	        that.currentorigin[1]++;//increase row used for rotation
 	}
 	this.checkCollision=function()
-	{	var temp=[];
+	{	
+		var temp=[];
 		for(i=0;i<=3;i++)
 		{
 			temp[i]=that.newcurrent[i];
 		}
 		for (i=4; i>=0; i--) 
-	      	{ //check if any blocking
-	      		for(var j=0;j<=3;j++)
-	      		{
+	    { 
+	      	for(var j=0;j<=3;j++)
+	      	{
 	      			
 	      		if(temp[i]==that.current[j][0])
 	      		{
 	      			var index=temp.indexOf(temp[i]);
 	      			
-	      				temp.splice(index,1);
+	      			temp.splice(index,1);
+	      			break;
+	      		}
+	      	}
+	      		
+	    }
+	      		
+	          	
+	    for(i=0;i<temp.length;i++)
+	    {
+	        tests = String(document.images[temp[i]].src);
+	        found = tests.search("blank.png");
+	        if (found == -1) 
+	        {  
+	            return true;
+	            break;
+                   
+            }
+        } 
+	}
 	      				
 	      			
 	      			
 	      			
-	      			break;
-	      		}
-	      		}
-	      		
-	      		
-	        }
-	          	
-	           	for(i=0;i<temp.length;i++)
-	           	{
-	            tests = String(document.images[temp[i]].src);
-	            found = tests.search("blank.png");
-	            if (found == -1) 
-	            {  
-	                return true;
-	                break;
-                   
-                }
-                } 
 	       
-	}
 	this.delayRemoveLine=function()
 	{
 		that.fadeout();
@@ -416,7 +391,7 @@ function MakeBlock()
 	   	else
 	    {
 	    	
-	    	that.calcNewPos();
+	    	that.calcNewPosDown();
 	    		
 	      
 	      	if(that.checkCollision()==true)
@@ -438,7 +413,8 @@ function MakeBlock()
 		    	
 		    else
 	      	{		
-	      		that.moveToNextPos();
+	      		that.blankCurrPice();
+	      		that.moveToNextPosDown();
 	      	}
 	    	 
 		}   
