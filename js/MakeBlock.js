@@ -19,11 +19,13 @@ function MakeBlock()
 	var that=this;
 	this.filled=false;
 	this.line=[];
+	this.newcurrent=[];
+	this.temp=[];
 	this.makeBlock=function(type)
 	{
-		var type=1;
+		
 		that.nexttypenum=type;
-		var formulae=formula.blockformulas[1][0];
+		var formulae=formula.blockformulas[type][0];
 		that.colortype=Math.floor(Math.random()*5);
 		var color = formula.blockimages[that.colortype];
 		for (i=0;i<=3;i++)
@@ -55,6 +57,7 @@ function MakeBlock()
 	   var no;
 	   var tests;
 	   that.dx=1;
+	  
 	   that.currentorigin = [atcol, atrow];
 	   that.currenttypenum = type;
 	  	
@@ -278,21 +281,9 @@ function MakeBlock()
 				that.remove();
 				that.makeBlock(type);
 	}
-	
-	this.movedown=function()
+	this.checkAtBottom=function()
+
 	{
-		var i;
-	    var tests;
-	    var oksofar=true;
-	    var imgno;
-	    var atc;
-	    var atr;
-	    var newcurrent = new Array();//to store imagenum
-	    var saved = new Array();
-	    var found;
-	    var mine=[];
-	    var temp=[];
-	    
 		for (i=0; i<=3; i++) 
 	    {
 	      	imgno = that.current[i][0];
@@ -300,160 +291,161 @@ function MakeBlock()
 	      	atr = that.current[i][2];
 	 		
 	      	if (atr>=(vheight-1)) 
-	      	{ //at  bottom already
-	      	//need to signal start of new block
-	      		oksofar=false;
-	    		for(var j=0;j<=3;j++)
-	    		{
-	    		 mine[j]=that.current[j][2]; 
-				}
-				var minereduced = mine.reduce(function(a,b)  //remove duplicate row no.
-				{
-    				if (a.indexOf(b) < 0 ) a.push(b);
-    				return a;
-  				},[]);
-				
-	    
-	        	
-	        	for(var k=0;k<minereduced.length;k++)
-	        	{
-	        		var attr=minereduced[k];
-	        		
-					that.checkRowFilled(attr);
-				}
-				
-				
-				if(that.line.length!=0)
-				{	
-					that.fadeout();
-					var tid=setTimeout(function()
-    				{
-    				that.removeLine();
-
-    		
-    				
-    				},500);
-				}
-				else
-				{
-					that.callNextPiece();	 
-				
-				}      
-	        	
-	        	break;
-	        	
+	      	{ 
+	      		return true;
+	      		break;
 	      	}
-	      	newcurrent[i] = formula.imagenumber(atc,atr+1);
-	      	temp[i] = formula.imagenumber(atc,atr+1);
-	      	
 	    }
-
-	    if (oksofar==true) 
+	}
+	this.calcNewPos=function()
+	{
+		for (i=0; i<=3; i++) 
 	    {
-
-	      /*	for (i=0;i<=3; i++) 
-	      	{  //saved image nums & blank out current piece
-	      		saved[i] = that.current[i][0];
+	      	imgno = that.current[i][0];
+	      	atc = that.current[i][1];
+	      	atr = that.current[i][2];
+	 		
+	      		that.newcurrent[i] = formula.imagenumber(atc,atr+1);
+	      		
+	    }	
+	}
+	this.callRowFilledCheck=function()
+	{	
+		var mine=[];
+		for(var j=0;j<=3;j++)
+	    {
+	    	mine[j]=that.current[j][2]; 
+		}
+		var minereduced = mine.reduce(function(a,b)  //remove duplicate row no.
+		{
+  			if (a.indexOf(b) < 0 ) a.push(b);
+    			return a;
+  		},[]);
+		for(var k=0;k<minereduced.length;k++)
+	    {
+	    	var attr=minereduced[k];
+			that.checkRowFilled(attr);
+		}
+	}
+	        		
+	this.moveToNextPos=function()
+	{
+			for (i=0;i<=3; i++) 
+	      	{  // blank out current piece
+	      		
 	      		document.images[that.current[i][0]].src = "images/blank.png";
-	      	} */
-	      	var match=0;
-	      	for (i=4; i>=0; i--) 
+	      	}
+	      	for (i=0;i<=3; i++)
+	      	{	
+	       		document.images[that.newcurrent[i]].src = that.currenttype;
+	       		that.current[i][0] = that.newcurrent[i];
+	     		that.current[i][2]++; // y increases; x stays the same
+	       
+	      	} 
+	        that.currentorigin[1]++;//increase row used for rotation
+	}
+	this.checkCollision=function()
+	{	var temp=[];
+		for(i=0;i<=3;i++)
+		{
+			temp[i]=that.newcurrent[i];
+		}
+		for (i=4; i>=0; i--) 
 	      	{ //check if any blocking
 	      		for(var j=0;j<=3;j++)
 	      		{
-
+	      			
 	      		if(temp[i]==that.current[j][0])
 	      		{
 	      			var index=temp.indexOf(temp[i]);
 	      			
 	      				temp.splice(index,1);
-	      				 match++;
+	      				
 	      			
 	      			
 	      			
 	      			break;
 	      		}
 	      		}
-	      		console.log(index);
-	      		console.log(temp);
+	      		
 	      		
 	        }
-	          // debugger;
+	          	
 	           	for(i=0;i<temp.length;i++)
 	           	{
 	            tests = String(document.images[temp[i]].src);
 	            found = tests.search("blank.png");
 	            if (found == -1) 
 	            {  
-	                oksofar = false;
-                   // break;
+	                return true;
+	                break;
+                   
                 }
                 } 
-	        temp=[];
-	        
-	        if (oksofar==true)
-	      	{		for (i=0;i<=3; i++) 
-	      	{  //saved image nums & blank out current piece
-	      		saved[i] = that.current[i][0];
-	      		document.images[that.current[i][0]].src = "images/blank.png";
-	      	}
-	      		for (i=0;i<=3; i++)
-	      		{	
-	       			document.images[newcurrent[i]].src = that.currenttype;
-	       			that.current[i][0] = newcurrent[i];
-	       			that.current[i][2]++; // y increases; x stays the same
 	       
-	      		} 
-	        	that.currentorigin[1]++;//increase row used for rotation
-	      	}
-	      
-	    	else
-		    {
-		        /*for (i=0;i<=3; i++) 
-		        {
-		        	document.images[saved[i]].src = that.currenttype;
-		      
-		        	//  start new falling piece
-		        }*/
-		        
-				for(var j=0;j<=3;j++)
-	    		{
-	    		 mine[j]=that.current[j][2]; 
-				}
-				var minereduced = mine.reduce(function(a,b)  //remove duplicate row no.
-				{
-    				if (a.indexOf(b) < 0 ) a.push(b);
-    				return a;
-  				},[]);
-				for(var k=0;k<minereduced.length;k++)
-				{
-					atr=minereduced[k];
-					that.checkRowFilled(atr);
-				}
-				if(that.line.length!=0)
-				{	
-					that.fadeout();
-					var tid=setTimeout(function()
-    				{
-    				that.removeLine();
+	}
+	this.delayRemoveLine=function()
+	{
+		that.fadeout();
+		var tid=setTimeout(function()
+    	{
+    		that.removeLine();
 
-    				},500);
-    				that.stop=false;
+    	},500);
+    				
+	}
+	this.movedown=function()
+	{
+	    if(that.checkAtBottom()==true)
+	    {
+	    		
+			that.callRowFilledCheck();
+				
+     		if(that.line.length!=0)
+			{	
+				that.delayRemoveLine();
+			}
+			else
+			{
+				that.callNextPiece();	 
+				
+			}      
+	        	
+	    }
+	      
+	   	else
+	    {
+	    	
+	    	that.calcNewPos();
+	    		
+	      
+	      	if(that.checkCollision()==true)
+	      
+		    {
+		      
+		        that.callRowFilledCheck();
+				
+				if(that.checkRowFilled==true)
+				{	
+					that.delayRemoveLine();
 				}
 				else
 				{	
 					that.callNextPiece();
 				}      
+		    }
 		        	
 		    	
-		    } 
+		    else
+	      	{		
+	      		that.moveToNextPos();
+	      	}
+	    	 
 		}   
     }
-
+	      	
     this.checkRowFilled=function(atr)
     {
-    	//var i=vheight-1;
-    	//var i=atr;
     	var test;
     	var found;
     	var imagenum;
@@ -472,10 +464,9 @@ function MakeBlock()
     		if(filledcount==hwidth)
     		{	
     			that.line.push(atr);
-
-    			
+    			return true;
     		}
-    		
+
     }
     this.fadeout=function()
     {	
@@ -522,3 +513,9 @@ function MakeBlock()
     	that.line=[];
     } 
 }
+
+		
+	    
+		
+    			
+    		
