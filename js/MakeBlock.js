@@ -17,6 +17,8 @@ function MakeBlock()
 	this.nexttypenum;//block type of next peice
 	this.colortype;
 	this.score=0;
+	this.colortypeArr=[];
+	this.imageToRmv=[];
 	var that=this;
 	
 	this.line=[];//line no of filled rows
@@ -27,8 +29,8 @@ function MakeBlock()
 		
 		that.nexttypenum=type;
 		var formulae=formula.blockformulas[type][0];
-		that.colortype=Math.floor(Math.random()*6);
-		var color = formula.blockimages[that.colortype];
+		//that.colortype=Math.floor(Math.random()*6);
+		var color = formula.blockimages[type];
 		for (i=0;i<=3;i++)
 	   {
 	   		var atCurrCol =  formulae[i][1];
@@ -54,19 +56,22 @@ function MakeBlock()
 		}
 	}
 
-	this.makeCurrentBlock=function(type, atcol, atrow,color) 
+	this.makeCurrentBlock=function(type, atcol, atrow) 
 	{
 	   var no;
 	   var tests;
 	   
-	  
+	  if(flag==1)
+	  {
+	  	type=1;
+	  }
 	   that.currentorigin = [atcol, atrow];
 	   that.currenttypenum = type;
 	  	
-	   that.currenttype = formula.blockimages[color];
+	   that.currenttype = formula.blockimages[type];
 	   that.currentorientation = 0;
 	   var i;
-	   var block = formula.blockimages[type];
+	  
 	   var formulae = formula.blockformulas[type][0];
 	   var imagenum;
 	   var atCurrCol;
@@ -86,8 +91,17 @@ function MakeBlock()
 	         
 	         if (no>=0) 
 	        {
-	           
-	            document.getElementById("img"+imagenum).src = that.currenttype; 
+	            if(flag==0)
+	            {
+	            	document.getElementById("img"+imagenum).src = that.currenttype; 
+	            	
+	        	}
+	        	else
+	        	{	
+	        		
+	        		that.colortypeArr[i]=formula.blockimages[Math.floor(Math.random()*6)];
+	        		document.getElementById("img"+imagenum).src = that.colortypeArr[i];
+	        	}
 	    	    that.current[i][0]=imagenum;
 	    	  	that.current[i][1] = atCurrCol;
 	     		that.current[i][2] = atCurrRow;
@@ -99,7 +113,7 @@ function MakeBlock()
 	        	var div1=document.getElementById("gameOver");
 	        	
 	        	div1.style.visibility="visible";
-	        	debugger;
+	        	
 	        	break;
 	        }
 	    }
@@ -149,6 +163,21 @@ function MakeBlock()
 	    }
 
     }
+    this.colorChange=function()
+    {
+    	
+    	var temp=[];
+    	for(i=0;i<=3;i++)
+    	{
+    		temp[i]=that.colortypeArr[i];
+    	}
+    	that.colortypeArr[0]=temp[3];
+    	for(i=0;i<3;i++)
+    	{
+    		that.colortypeArr[i+1]=temp[i];
+    	}
+    	
+    }
     this.checkCollisionRotate=function()
     {
     	var formulae = formula.blockformulas[that.currenttypenum][that.currentorientation];
@@ -183,7 +212,14 @@ function MakeBlock()
      	{
 			imagenum=that.newcurrent[i];
          	 
-         	document.getElementById("img"+imagenum).src = that.currenttype; 
+         	if(flag==0)
+	       		{
+	       			document.getElementById("img"+that.newcurrent[i]).src = that.currenttype;
+	       		}
+	       		else
+	       		{
+	       			document.getElementById("img"+that.newcurrent[i]).src = that.colortypeArr[i];
+	       		}
 	 		that.current[i][0]=imagenum;
 	 		that.current[i][1] = atcol+formulae[i][1];
 	 		that.current[i][2] = atrow+formulae[i][0];
@@ -256,7 +292,14 @@ function MakeBlock()
 	 	for(i=0;i<=3;i++)
 	    {
 	    	
-	    	document.getElementById("img"+that.newcurrent[i]).src=that.currenttype;
+	    		if(flag==0)
+	       		{
+	       			document.getElementById("img"+that.newcurrent[i]).src = that.currenttype;
+	       		}
+	       		else
+	       		{
+	       			document.getElementById("img"+that.newcurrent[i]).src = that.colortypeArr[i];
+	       		}
 	    	that.current[i][0] = that.newcurrent[i];//imgno
 	    		
             that.current[i][1] = that.current[i][1]+dir;//shift column no. 
@@ -269,9 +312,17 @@ function MakeBlock()
 	{
 		var type=Math.floor(Math.random()*6);
 	    var col=Math.floor(Math.random()*5);
-	    that.makeCurrentBlock(that.nexttypenum,col,0,that.colortype);
-		that.removeNextBlock();
-		that.makeNextBlock(type);
+	    
+	    if(flag==0)
+	    {
+	    	that.makeCurrentBlock(that.nexttypenum,col,0);
+			that.removeNextBlock();
+			that.makeNextBlock(type);
+		}
+		else
+		{
+			that.makeCurrentBlock(type,col,0);
+		}
 	}
 	this.checkAtBottom=function()
 
@@ -319,6 +370,19 @@ function MakeBlock()
 			that.checkRowFilled(attr);
 		}
 	}
+	this.callColorMatchCheck=function()
+	{	
+		var mine=[];
+		for(var j=0;j<=3;j++)
+	    {
+	    	var atr=that.current[j][2]; 
+	    	var atc=that.current[j][1];
+	    	var imgno=that.current[j][0];
+	    	
+			that.checkColorMatchHori(atr,atc,imgno);
+			that.checkColorMatchVert(atr,atc,imgno);
+		}
+	}	
 	this.blankCurrPice=function()
 	{
 		for (i=0;i<=3; i++) 
@@ -331,14 +395,55 @@ function MakeBlock()
 			
 	      	for (i=0;i<=3; i++)
 	      	{	
+	       		if(flag==0)
+	       		{
 	       		
-	       		document.getElementById("img"+that.newcurrent[i]).src = that.currenttype;
+	       			document.getElementById("img"+that.newcurrent[i]).src = that.currenttype;
+	       			
+	       		}
+	       		else
+	       		{
+	       			
+	       			document.getElementById("img"+that.newcurrent[i]).src = that.colortypeArr[i];
+	       			
+	       		}
 	       		that.current[i][0] = that.newcurrent[i];
 	     		that.current[i][2]++; 
 	       
 	      	} 
 	        that.currentorigin[1]++;//increase row used as reference for rotation
 	}
+	this.movetoTarget=function()
+	{	
+	
+		for(i=0;i<=3;i++)
+		{	
+			var imgno=that.current[i][0];
+			var row=that.current[i][2];
+			var temp=imgno;
+			var found=0;
+
+			for(j=row;j<vheight-1;j++)
+			{
+				temp+=hwidth;
+
+			var tests = String(document.getElementById("img"+(temp)).src);
+	        var found = tests.search("blank.png");
+	        
+	        if(found>-1)
+	        {
+	        	document.getElementById("img"+that.current[i][0]).src="images/blank.png";
+	       that.current[i][0]+=hwidth;
+	       that.current[i][2]++; 
+	       document.getElementById("img"+that.current[i][0]).src=that.colortypeArr[i]; 
+	        
+	    	}
+	    	row++;
+	        }
+	       
+		}
+	}
+	
 	this.checkCollision=function()
 	{	
 		var temp=[];//used to store new imgno which are not in current arr
@@ -396,9 +501,14 @@ function MakeBlock()
 	{
 	    if(that.checkAtBottom()==true)
 	    {
-	    		
+	    	if(flag==0)
+	    	{	
 			that.callRowFilledCheck();
-				
+			}
+			else
+			{
+				that.callColorMatchCheck();
+			}	
      		if(that.line.length!=0)
 			{	
 				that.delayRemoveLine();
@@ -421,7 +531,17 @@ function MakeBlock()
 	      
 		    {
 		      
-		        that.callRowFilledCheck();
+		    if(flag==0)
+	    	{	
+			that.callRowFilledCheck();
+			}
+			if(flag==1)
+			{
+				
+				that.movetoTarget();
+				that.callColorMatchCheck();
+			}	
+     		
 				
 				if(that.line.length!=0)//row filled
 				{	
@@ -468,6 +588,107 @@ function MakeBlock()
     		}
 
     }
+     this.checkColorMatchHori=function(atr,atc,imageno)
+    {
+    	var test;
+    	var found;
+    	var imagenum;
+    	var index=0;
+    	
+    	var str1=String(document.getElementById("img"+imageno).src);
+
+    	for(var i=atc+1;i<hwidth;i++)
+    	{
+    		imagenum=formula.imagenumber(i,atr);
+    		var str2=String(document.getElementById("img"+imagenum).src);
+    		
+    		if(str2.localeCompare(str1)==0)
+    		{
+    			that.imageToRmv[index]=imagenum;
+    			index++;
+    		}
+    		else
+    		{
+    			break;
+    		}
+    	}
+    	
+    	for(var i=atc-1;i>=0;i--)
+    	{
+    		imagenum=formula.imagenumber(i,atr);
+    		var str2=String(document.getElementById("img"+imagenum).src);
+    		if(str2.localeCompare(str1)==0)
+    		{
+    			that.imageToRmv[index]=imagenum;
+    			index++;
+    		}
+    		else
+    		{
+    			break;
+    		}
+    	}
+    		
+    		if(index>=2)
+    		{
+    			that.imageToRmv[index ]=imageno;
+    			that.removeLineHori();
+    		}
+
+    }
+    this.checkColorMatchVert=function(atr,atc,imageno)
+    {
+    	var test;
+    	var found;
+    	var imagenum;
+    	var index=0;
+    	
+    	var str1=String(document.getElementById("img"+imageno).src);
+    	
+    	for(var i=atr+1;i<vheight;i++)
+    	{
+    		imagenum=formula.imagenumber(atc,i);
+    		var str2=String(document.getElementById("img"+imagenum).src);
+    		
+    		if(str2.localeCompare(str1)==0)
+    		{
+    			that.imageToRmv[index]=imagenum;
+    			index++;
+    			
+    		}
+    		else
+    		{
+    			break;
+    		}
+    	}
+   
+    	for(var i=atr-1;i>=0;i--)
+    	{
+    		imagenum=formula.imagenumber(atc,i);
+    		var str2=String(document.getElementById("img"+imagenum).src);
+    		if(str2.localeCompare(str1)==0)
+    		{
+    			that.imageToRmv[index]=imagenum;
+    			index++;
+    			
+    		}
+    		else
+    		{
+    			break;
+    		}
+    	}
+    		
+    		if(index>=2)
+    		{
+    			that.imageToRmv[index]=imageno;
+    			 
+    			
+  				
+				
+    			that.removeLineVert();
+    		}
+
+    }
+   
     this.fadeout=function()
     {	
     	
@@ -506,6 +727,7 @@ function MakeBlock()
     	{
     		that.score+=8;
     	}
+
     	document.getElementById("display-score").innerHTML=that.score;
     	for (var k=0;k<temp.length;k++)
     	{
@@ -522,6 +744,51 @@ function MakeBlock()
     	}
     	}
     	that.line=[];
+    } 
+    this.removeLineHori=function()
+    {	
+    	var col;
+    	var rowUp;
+    	var imgno;
+    	var imgnoUp;
+    	
+    		for(var i=0;i<that.imageToRmv.length;i++)
+    		{
+    			var imgno=that.imageToRmv[i];
+    			while(imgno>=hwidth)
+    		{
+    			
+    			 imgnoUp=imgno-hwidth;
+    			
+    			
+    			document.getElementById("img"+imgno).src=document.getElementById("img"+imgnoUp).src;
+    			imgno-=hwidth;
+    		}
+    		}
+    	that.imageToRmv=[];
+    } 
+    this.removeLineVert=function()
+    {	
+    	var col;
+    	var rowUp;
+    	var imgno;
+    	var imgnoUp;
+    	var attr=Math.max.apply(null, that.imageToRmv);
+    	var imgno=attr;
+    			for(var j=0;j<vheight-1;j++)
+    		{
+    			
+    			var imgnoUp=imgno-that.imageToRmv.length*hwidth;
+    			
+    			if(imgnoUp<0)
+    			{
+    				break;
+    			}
+    			document.getElementById("img"+imgno).src=document.getElementById("img"+imgnoUp).src;
+    			imgno-=hwidth;
+    		}
+    	
+    	that.imageToRmv=[];
     } 
 }
 

@@ -1,51 +1,77 @@
 var intervalId;
  var make=new MakeBlock();
- 
-  
+ var duration=1000;
   
  
 function Start()
 {
 	
   make.makeCurrentBlock(1,2,0,1);
-  make.makeNextBlock(3);
-  
+  if(flag==0)
+  {
+    make.makeNextBlock(3);
+  }
    document.onkeydown = checkKey;
   		function checkKey(e)
   		{
 
     	e = e || window.event;
 
-    	if (e.keyCode == '38') {
+    	if (e.keyCode == '38')
+      {
         // up arrow
-        make.rotate();
+        if(flag==0)
+        {
+        
+          make.rotate();
+        }
+        if (flag==1)
+        {
+          make.colorChange();
+          console.log(flag);
+        }
     	}
-    	else if (e.keyCode == '40') {
+    	else if (e.keyCode == '40') 
+      {
         // down arrow
         make.movedown();
     	}
-    	else if (e.keyCode == '37') {
+    	else if (e.keyCode == '37')
+      {
        // left arrow
        
        	make.movesideways(-1);
        	
     	}
-    	else if (e.keyCode == '39') {
+    	else if (e.keyCode == '39') 
+      {
        // right arrow
        make.movesideways(1);
-    		}
+    	}
 
 		}
-		
-
+      var flaginterval =0;
+		var temp;
   function movedown()
-  	{	
-  		
-  		make.movedown();
+  	{
+       
+  	  if(make.score%2==0 && make.score !=0 && flaginterval ==0)
+      {
+        flaginterval = 1;
+        
+        temp= make.score;
+        clearInterval(intervalId);
+        duration -=50;        
+        intervalId = setInterval(movedown,duration);
+      }
 
-  
+      if(make.score>temp && make.score%2==0){
+        flaginterval = 0;
+      }
+  		make.movedown();
+     
  	}
-intervalId=setInterval(make.movedown,1000);
+intervalId=setInterval(movedown,duration);
 	
 }
 function Pause()
