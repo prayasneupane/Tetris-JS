@@ -1,4 +1,4 @@
-var id;
+var intervalId;
  var make=new MakeBlock();
  
   
@@ -42,16 +42,41 @@ function Start()
   	{	
   		
   		make.movedown();
+
   
  	}
- id=setInterval(make.movedown,1000);
+intervalId=setInterval(make.movedown,1000);
 	
 }
 function Pause()
 {
-window.clearInterval(id);
+window.clearInterval(intervalId);
 }
 function Resume()
 {
-   id=setInterval(make.movedown,1000);
+   intervalId=setInterval(make.movedown,1000);
+}
+function Restart()
+{
+  clearInterval(intervalId);
+  var div=document.getElementById("boardWrapper");
+  var div1=document.getElementById("showBoardWrapper");
+  var t=document.getElementById("table1");
+  var t1=document.getElementById("table2");
+  div.removeChild(t);
+  div1.removeChild(t1);
+  
+  board.createBoard();
+  board.createShowNextBoard();
+  make.score=0;
+  document.getElementById("display-score").innerHTML=0;
+  Start();
+}
+function NewGame()
+{
+  Restart();
+  //var main=document.getElementById("mainWrapper");
+  var div2=document.getElementById("gameOver");
+  div2.style.display="none";
+  Start();
 }

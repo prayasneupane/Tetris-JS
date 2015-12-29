@@ -4,6 +4,7 @@
   table
   {
     border-collapse: collapse;
+    margin:auto;
   }
   td{
     padding:0px;
@@ -21,55 +22,115 @@
   }
   #display-score
   {
-    position: absolute;
-    left:400px;
-    top:250px;
+    
     border:1px solid black;
-    width:100px;
+    
     height:50px;
     text-align: center;
     line-height:50px;
+    font-size: 32px;
+    font-weight: bolder;
   }
+   #menu-text
+  {
+    
+    border:1px solid black;
+   
+    height:50px;
+    text-align: center;
+    line-height:50px;
+    font-size: 32px;
+    font-weight: bolder;
+  }
+  #boardWrapper
+  {
+    border: 10px solid red;
+    width:225px;
+
+
+  }
+  #showBoardWrapper
+  {
+    border:1px solid blue;
+    font-size: 32px;
+    font-weight: bolder;
+
+  }
+  #gameOver
+  {
+    position: absolute;
+    z-index: 5;
+    width:200px;
+    height:200px;
+    top:100px;
+    left:50px;
+    font-size: 50px;
+    font-weight: bolder;
+    background-color: grey;
+    border:2px solid red;
+    visibility: hidden;
+  }
+  #interface
+  {
+    position:absolute;
+    z-index: 10;
+    width:700px;
+    height:500px;
+    background:url(images/tetris_menu.gif) no-repeat;
+
+  }
+  #side-Wrapper
+  {
+    position:absolute;
+    left:400px;
+    border:2px solid green;
+  }
+  a
+  {
+    text-decoration: none;
+  }
+
  </style>
 </head>
 <body>
+  <div id="mainWrapper">
+  <div id="interface" ></div>  
+ <div id="side-Wrapper">
+  <div id="menu-text">Score</div>
   <div id="display-score"></div>
+  <div id="menu-text">NextPeice</div>
+  <div id="showBoardWrapper"></div>
+  <div id="menu-text"><a href="javascript:Pause();">Pause Game </a> </div>
+  <div id="menu-text"><a href="javascript:Resume();">Resume Game </a> </div>
+  <div id="menu-text"><a href="javascript:Restart();">Restart Game </a> </div>
+</div>
+  <div id="gameOver"><p>GAME OVER!!!</p></br><a href="javascript:NewGame();">Start New Game </a> </div>
+  <div id="boardWrapper"></div>
+  </div>
   <script src="js/create.js"></script>
   <script src="js/Formula.js"></script>
   <script src="js/MakeBlock.js"></script>
   
   <script src="js/Start.js"></script>
 	
- <table border="1">  
-<td>
-<script language="JavaScript">
+  <script>
+   var hwidth = 9; //number of columns
+  var vheight = 15;
+    var board=new create();
+  board.createBoard();
+ board.createShowNextBoard();
+ document.getElementById("interface").addEventListener("click", function()
+    {
+      var menu=document.getElementById("interface");
+      menu.style.visibility="hidden";
+      Start();
+    });
+  </script>
+
+
  
 
-  var hwidth = 9; //number of columns
-  var vheight = 15;  //number of rows
-   var board=new create();
-  board.createboard();
- 
-  
-  
- /// setInterval(makeblocks,2000);
-</script>
 
-</td>
-</table>
-
- <table class="next" border="1"> 
-  <td>
-    <script language="JavaScript">
-
-    board.makeShowTable();
-</script>
-</td>
-</table>
-
-<a href="javascript:Start();">Start Game </a> <br/>
-<a href="javascript:Pause();">Pause Game </a> <br/>
-<a href="javascript:Resume();">Resume Game </a> <br/>
-
+</div>
 </body>
 </html>
