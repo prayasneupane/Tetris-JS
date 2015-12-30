@@ -5,12 +5,11 @@ var intervalId;
  
 function Start()
 {
-	
-  make.makeCurrentBlock(1,2,0,1);
-  if(flag==0)
-  {
+	var a=[1,2,3,4];//self initialization at first
+  make.makeCurrentBlock(1,2,0,a);
+  
     make.makeNextBlock(3);
-  }
+  
    document.onkeydown = checkKey;
   		function checkKey(e)
   		{
@@ -75,10 +74,16 @@ intervalId=setInterval(movedown,duration);
 function Pause()
 {
 window.clearInterval(intervalId);
+var div1=document.getElementById("pause");
+div1.style.visibility="visible";
 }
+            
+
 function Resume()
 {
-   intervalId=setInterval(make.movedown,1000);
+  var div1=document.getElementById("pause");
+  div1.style.visibility="hidden";
+  intervalId=setInterval(make.movedown,1000);
 }
 function Restart()
 {

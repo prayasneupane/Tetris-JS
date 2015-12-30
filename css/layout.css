@@ -74,6 +74,20 @@ table
     border:2px solid red;
     visibility: hidden;
   }
+  #pause
+  {
+    position: absolute;
+    z-index: 5;
+    width:200px;
+    height:200px;
+    top:100px;
+    left:50px;
+    font-size: 50px;
+    font-weight: bolder;
+    background-color: grey;
+    border:2px solid red;
+    visibility: hidden;
+  }
   #interface
   {
     position:absolute;

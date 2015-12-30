@@ -17,7 +17,8 @@ function MakeBlock()
 	this.nexttypenum;//block type of next peice
 	this.colortype;
 	this.score=0;
-	this.colortypeArr=[];
+	this.nextcolorArr=[];//used to pass it to current block to be made
+	this.colortypeArr=[];//color of current peice 
 	this.imageToRmv=[];
 	var that=this;
 	
@@ -26,10 +27,14 @@ function MakeBlock()
 	
 	this.makeNextBlock=function(type)
 	{
-		
+
+		if(flag==1)
+		{
+			type=1;
+		}
 		that.nexttypenum=type;
 		var formulae=formula.blockformulas[type][0];
-		//that.colortype=Math.floor(Math.random()*6);
+		
 		var color = formula.blockimages[type];
 		for (i=0;i<=3;i++)
 	   {
@@ -38,10 +43,20 @@ function MakeBlock()
 	   		var atCurrRow = formulae[i][0]; 
 	   		imagenum=formula.imagenumberdiff(atCurrCol, atCurrRow)+vheight*hwidth;
 	   		that.num[i]=imagenum;
-	   	
-
+	   		if(flag==0)
+	   		{
+	   			
+	   			document.getElementById("img"+imagenum).setAttribute("src",color);
+	   		}
+	   		else
+	   		{
+	   			
+					
+					that.nextcolorArr[i]=Math.floor(Math.random()*6);
+					document.getElementById("img"+imagenum).setAttribute("src",formula.blockimages[that.nextcolorArr[i]]);
+				
+	   		}
 	   		
-	   		document.getElementById("img"+imagenum).setAttribute("src",color);
 
 	  	}
 	}
@@ -56,11 +71,11 @@ function MakeBlock()
 		}
 	}
 
-	this.makeCurrentBlock=function(type, atcol, atrow) 
+	this.makeCurrentBlock=function(type, atcol, atrow,colorArr) 
 	{
 	   var no;
 	   var tests;
-	   
+	
 	  if(flag==1)
 	  {
 	  	type=1;
@@ -98,9 +113,9 @@ function MakeBlock()
 	        	}
 	        	else
 	        	{	
+	        		that.colortypeArr[i]=formula.blockimages[colorArr[i]];
+	    			document.getElementById("img"+imagenum).src = that.colortypeArr[i];
 	        		
-	        		that.colortypeArr[i]=formula.blockimages[Math.floor(Math.random()*6)];
-	        		document.getElementById("img"+imagenum).src = that.colortypeArr[i];
 	        	}
 	    	    that.current[i][0]=imagenum;
 	    	  	that.current[i][1] = atCurrCol;
@@ -119,6 +134,7 @@ function MakeBlock()
 	    }
 	   
 	}
+	
 	this.rotate=function()
 	{
 		
@@ -313,16 +329,11 @@ function MakeBlock()
 		var type=Math.floor(Math.random()*6);
 	    var col=Math.floor(Math.random()*5);
 	    
-	    if(flag==0)
-	    {
-	    	that.makeCurrentBlock(that.nexttypenum,col,0);
+	  
+	    	that.makeCurrentBlock(that.nexttypenum,col,0,that.nextcolorArr);
 			that.removeNextBlock();
 			that.makeNextBlock(type);
-		}
-		else
-		{
-			that.makeCurrentBlock(type,col,0);
-		}
+		
 	}
 	this.checkAtBottom=function()
 
@@ -370,19 +381,7 @@ function MakeBlock()
 			that.checkRowFilled(attr);
 		}
 	}
-	this.callColorMatchCheck=function()
-	{	
-		var mine=[];
-		for(var j=0;j<=3;j++)
-	    {
-	    	var atr=that.current[j][2]; 
-	    	var atc=that.current[j][1];
-	    	var imgno=that.current[j][0];
-	    	
-			that.checkColorMatchHori(atr,atc,imgno);
-			that.checkColorMatchVert(atr,atc,imgno);
-		}
-	}	
+	
 	this.blankCurrPice=function()
 	{
 		for (i=0;i<=3; i++) 
@@ -427,23 +426,38 @@ function MakeBlock()
 			{
 				temp+=hwidth;
 
-			var tests = String(document.getElementById("img"+(temp)).src);
-	        var found = tests.search("blank.png");
+				var tests = String(document.getElementById("img"+(temp)).src);
+	        	var found = tests.search("blank.png");
 	        
-	        if(found>-1)
-	        {
-	        	document.getElementById("img"+that.current[i][0]).src="images/blank.png";
-	       that.current[i][0]+=hwidth;
-	       that.current[i][2]++; 
-	       document.getElementById("img"+that.current[i][0]).src=that.colortypeArr[i]; 
+	        	if(found>-1)
+	        	{
+	        		document.getElementById("img"+that.current[i][0]).src="images/blank.png";
+	       			that.current[i][0]+=hwidth;
+	       			that.current[i][2]++; 
+	       			
+	       			document.getElementById("img"+that.current[i][0]).src=that.colortypeArr[i]; 
 	        
-	    	}
-	    	row++;
+	    		}
+	    		row++;
 	        }
 	       
 		}
+		
 	}
-	
+	this.callColorMatchCheck=function()
+	{	
+		var mine=[];
+		for(var j=0;j<=3;j++)
+	    {
+	    	var atr=that.current[j][2]; 
+	    	var atc=that.current[j][1];
+	    	var imgno=that.current[j][0];
+	    	
+			that.checkColorMatchHori(atr,atc,imgno);
+			that.checkColorMatchVert(atr,atc,imgno);
+			that.checkColorMatchDiag(atr,atc,imgno);
+		}
+	}	
 	this.checkCollision=function()
 	{	
 		var temp=[];//used to store new imgno which are not in current arr
@@ -588,6 +602,63 @@ function MakeBlock()
     		}
 
     }
+    this.fadeout=function()
+    {	
+    	
+    	
+    	var imgno;
+    	for(var k=0;k<that.line.length;k++)
+    	{
+    	for(var i=0;i<hwidth;i++)
+    	{
+    		imgno=formula.imagenumber(i,that.line[k]);
+    		
+    		document.getElementById("img"+imgno).src="images/animation.gif";
+
+    	}
+    	}
+    }
+    this.removeLine=function()
+    {	
+    	
+    	var imgno;
+    	var imgnoUp;
+    	var temp=[];
+    			var temp = that.line.reduce(function(a,b)  //remove duplicate row no.
+				{
+    				if (a.indexOf(b) < 0 ) a.push(b);
+    				return a;
+  				},[]);
+				
+    	if(temp.length==1)
+    	{
+    		that.score+=1;
+    	}if(temp.length==2)
+    	{
+    		that.score+=4;
+    	}if(temp.length>=3)
+    	{
+    		that.score+=8;
+    	}
+
+    	document.getElementById("display-score").innerHTML=that.score;
+    	for (var k=0;k<temp.length;k++)
+    	{
+    	for(var i=temp[k];i>0;i--)
+    	{
+    		for(var j=0;j<hwidth;j++)
+    		{
+    			var imgno=formula.imagenumber(j,i);
+    			var imgnoUp=formula.imagenumber(j,i-1);
+    			//replace current row to remove by upper ones
+    			
+    			document.getElementById("img"+imgno).src=document.getElementById("img"+imgnoUp).src;
+    		}
+    	}
+    	}
+    	that.line=[];
+    } 
+    
      this.checkColorMatchHori=function(atr,atc,imageno)
     {
     	var test;
@@ -688,63 +759,120 @@ function MakeBlock()
     		}
 
     }
-   
-    this.fadeout=function()
-    {	
-    	
-    	
-    	var imgno;
-    	for(var k=0;k<that.line.length;k++)
-    	{
-    	for(var i=0;i<hwidth;i++)
-    	{
-    		imgno=formula.imagenumber(i,that.line[k]);
-    		
-    		document.getElementById("img"+imgno).src="images/animation.gif";
+   this.checkColorMatchDiag=function(atr,atc,imageno)
+   {
+   		
+    		that.checkColorMatchRightDiag(atr,atc,imageno);
+    		that.checkColorMatchLeftDiag(atr,atc,imageno);
+   }
+   this.checkColorMatchRightDiag=function(atr,atc,imageno)
+   {
+	   	var test;
+	    var found;
+	    var imagenum;
+	    var index=0;
+	    var i;
+	    var j;
+	    var str1=String(document.getElementById("img"+imageno).src);
+	    found=str1.search("blank.png");
+	    if(found == -1)
+	    {
+		   	for( i=atr-1 ,  j=atc+1;i>0 && j<hwidth;i-- , j++)
+		   		{
+		   			imagenum=formula.imagenumber(j,i);
+		    		var str2=String(document.getElementById("img"+imagenum).src);
+		    		if(str2.localeCompare(str1)==0)
+		    		{
+		    			that.imageToRmv[index]=imagenum;
+		    			index++;
+		    			
+		    		}
+		    		else
+		    		{
+		    			break;
+		    		}
+	   			}
+	   		for( i=atr+1 ,  j=atc-1;i<vheight && j>=0;i++ , j--)
+	   		{
+	   			imagenum=formula.imagenumber(j,i);
+	    		var str2=String(document.getElementById("img"+imagenum).src);
+	    		if(str2.localeCompare(str1)==0)
+	    		{
+	    			that.imageToRmv[index]=imagenum;
+	    			index++;
+	    			
+	    		}
+	    		else
+	    		{
+	    			break;
+	    		}
+	   		}
+	   		if(index>=2)
+	    		{
+	    			that.imageToRmv[index]=imageno;
+	    			 
+	    			
+	  				
+					debugger;
+	    			that.removeLineHori();
+	    		}
+	    }
+   		
+   }
+   this.checkColorMatchLeftDiag=function(atr,atc,imageno)
+   {
+   		var test;
+    	var found;
+    	var imagenum;
+    	var index=0;
+    	 var i;
+	    var j;
+	    var str1=String(document.getElementById("img"+imageno).src);
+	    found=str1.search("blank.png");
+	    if(found == -1)//that image is not blank
+	    {
+	   		for( i=atr-1 ,  j=atc-1;i>0 && j>=0;i-- , j--)
+	   		{
+	   			imagenum=formula.imagenumber(j,i);
+	    		var str2=String(document.getElementById("img"+imagenum).src);
+	    		if(str2.localeCompare(str1)==0)
+	    		{
+	    			that.imageToRmv[index]=imagenum;
+	    			index++;
+	    			
+	    		}
+	    		else
+	    		{
+	    			break;
+	    		}
+	   		}
+	   		for( i=atr+1 ,  j=atc+1;i<vheight && j<hwidth;i++ , j++)
+	   		{
+				imagenum=formula.imagenumber(j,i);
+	    		var str2=String(document.getElementById("img"+imagenum).src);
+	    		if(str2.localeCompare(str1)==0)
+	    		{
+	    			that.imageToRmv[index]=imagenum;
+	    			index++;
+	    			
+	    		}
+	    		else
+	    		{
+	    			break;
+	    		}   			
+	   		}
 
-    	}
-    	}
-    }
-    this.removeLine=function()
-    {	
-    	
-    	var imgno;
-    	var imgnoUp;
-    	var temp=[];
-    			var temp = that.line.reduce(function(a,b)  //remove duplicate row no.
-				{
-    				if (a.indexOf(b) < 0 ) a.push(b);
-    				return a;
-  				},[]);
-				
-    	if(temp.length==1)
-    	{
-    		that.score+=1;
-    	}if(temp.length==2)
-    	{
-    		that.score+=4;
-    	}if(temp.length>=3)
-    	{
-    		that.score+=8;
-    	}
-
-    	document.getElementById("display-score").innerHTML=that.score;
-    	for (var k=0;k<temp.length;k++)
-    	{
-    	for(var i=temp[k];i>0;i--)
-    	{
-    		for(var j=0;j<hwidth;j++)
-    		{
-    			var imgno=formula.imagenumber(j,i);
-    			var imgnoUp=formula.imagenumber(j,i-1);
-    			//replace current row to remove by upper ones
-    			
-    			document.getElementById("img"+imgno).src=document.getElementById("img"+imgnoUp).src;
-    		}
-    	}
-    	}
-    	that.line=[];
-    } 
+			if(index>=2)
+	    		{
+	    			that.imageToRmv[index]=imageno;
+	    			 
+	    			
+	  				debugger;
+					
+	    			that.removeLineHori();
+	    		}
+    	}	
+   }
     this.removeLineHori=function()
     {	
     	var col;
@@ -775,16 +903,23 @@ function MakeBlock()
     	var imgnoUp;
     	var attr=Math.max.apply(null, that.imageToRmv);
     	var imgno=attr;
-    			for(var j=0;j<vheight-1;j++)
+    			for(var j=vheight-1;j>=0;j--)
     		{
     			
     			var imgnoUp=imgno-that.imageToRmv.length*hwidth;
-    			
-    			if(imgnoUp<0)
+
+    			if(imgno<0)
     			{
     				break;
     			}
-    			document.getElementById("img"+imgno).src=document.getElementById("img"+imgnoUp).src;
+    			if(imgnoUp<0)
+    			{
+    				document.getElementById("img"+imgno).src="images/blank.png";
+    			}
+    			else
+    			{
+    				document.getElementById("img"+imgno).src=document.getElementById("img"+imgnoUp).src;
+    			}
     			imgno-=hwidth;
     		}
     	
