@@ -1,6 +1,123 @@
-#mainDiv
-{
-	width:700px;
-	height:600px;
-	border:1px solid red;
-}
+table
+  {
+    border-collapse: collapse;
+    margin:auto;
+  }
+  td{
+    padding:0px;
+  }
+  
+  img
+  {
+    height:25px;
+    width:25px;
+  }
+ 
+  #display-score
+  {
+    
+    border:1px solid black;
+    
+    height:50px;
+    text-align: center;
+    line-height:50px;
+    font-size: 32px;
+    font-weight: bolder;
+  }
+   #menu-text
+  {
+    
+    border:1px solid black;
+   
+    height:50px;
+    text-align: center;
+    line-height:50px;
+    font-size: 32px;
+    font-weight: bolder;
+  }
+   #menu-text-next
+  {
+    
+    border:1px solid black;
+   
+    height:50px;
+    text-align: center;
+    line-height:50px;
+    font-size: 32px;
+    font-weight: bolder;
+  }
+  #boardWrapper
+  {
+    border: 10px solid red;
+    width:225px;
+
+
+  }
+  #showBoardWrapper
+  {
+    border:1px solid blue;
+    font-size: 32px;
+    font-weight: bolder;
+
+  }
+  #gameOver
+  {
+    position: absolute;
+    z-index: 5;
+    width:200px;
+    height:300px;
+    top:100px;
+    left:50px;
+    font-size: 50px;
+    font-weight: bolder;
+    background-color: grey;
+    border:2px solid red;
+    visibility: hidden;
+  }
+  #interface
+  {
+    position:absolute;
+    z-index: 10;
+    width:700px;
+    height:500px;
+    background:url(../images/tetris_menu.gif) no-repeat;
+
+  }
+  #side-Wrapper
+  {
+    position:absolute;
+    left:400px;
+    border:2px solid green;
+  }
+  a
+  {
+    text-decoration: none;
+  }
+  .newgame
+  {
+    
+    font-size: 16px;
+  }
+  #tetris
+  {
+    margin-top:290px;
+    width:200px;
+    height:50px;
+    margin-left: 110px;
+    background-color: grey;
+    text-align: center;
+    border:2px solid black;
+    font-weight: bolder;
+    font-size: 32px;
+  }
+  #tetris-plus
+  {
+    height: 50px;
+   width:200px;
+    margin-left: 110px;
+    background-color: grey;
+    text-align: center;
+    border:2px solid black;
+    font-weight: bolder;
+    font-size: 32px;
+  }

@@ -20,17 +20,15 @@ function Start()
     	if (e.keyCode == '38')
       {
         // up arrow
-        if(flag==0)
-        {
+        
         
           make.rotate();
-        }
-        if (flag==1)
-        {
-          make.colorChange();
-          console.log(flag);
-        }
+       
     	}
+      if(e.keyCode =='32')
+      {//space bar
+        make.colorChange();
+      }
     	else if (e.keyCode == '40') 
       {
         // down arrow

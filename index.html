@@ -1,134 +1,7 @@
 <html>
 <head>
-  <style>
-  table
-  {
-    border-collapse: collapse;
-    margin:auto;
-  }
-  td{
-    padding:0px;
-  }
-  
-  img
-  {
-    height:25px;
-    width:25px;
-  }
- /* #mainWrapper
-  {
-    background-color: grey;
-  }*/
-  #display-score
-  {
-    
-    border:1px solid black;
-    
-    height:50px;
-    text-align: center;
-    line-height:50px;
-    font-size: 32px;
-    font-weight: bolder;
-  }
-   #menu-text
-  {
-    
-    border:1px solid black;
-   
-    height:50px;
-    text-align: center;
-    line-height:50px;
-    font-size: 32px;
-    font-weight: bolder;
-  }
-   #menu-text-next
-  {
-    
-    border:1px solid black;
-   
-    height:50px;
-    text-align: center;
-    line-height:50px;
-    font-size: 32px;
-    font-weight: bolder;
-  }
-  #boardWrapper
-  {
-    border: 10px solid red;
-    width:225px;
-
-
-  }
-  #showBoardWrapper
-  {
-    border:1px solid blue;
-    font-size: 32px;
-    font-weight: bolder;
-
-  }
-  #gameOver
-  {
-    position: absolute;
-    z-index: 5;
-    width:200px;
-    height:300px;
-    top:100px;
-    left:50px;
-    font-size: 50px;
-    font-weight: bolder;
-    background-color: grey;
-    border:2px solid red;
-    visibility: hidden;
-  }
-  #interface
-  {
-    position:absolute;
-    z-index: 10;
-    width:700px;
-    height:500px;
-    background:url(images/tetris_menu.gif) no-repeat;
-
-  }
-  #side-Wrapper
-  {
-    position:absolute;
-    left:400px;
-    border:2px solid green;
-  }
-  a
-  {
-    text-decoration: none;
-  }
-  .newgame
-  {
-    text-decoration:all;
-    font-size: 16px;
-  }
-  #tetris
-  {
-    margin-top:290px;
-    width:200px;
-    height:50px;
-    margin-left: 110px;
-    background-color: grey;
-    text-align: center;
-    border:2px solid black;
-    font-weight: bolder;
-    font-size: 32px;
-  }
-  #tetris-plus
-  {
-    height: 50px;
-   width:200px;
-    margin-left: 110px;
-    background-color: grey;
-    text-align: center;
-    border:2px solid black;
-    font-weight: bolder;
-    font-size: 32px;
-  }
- </style>
-</head>
+  <link rel="stylesheet" href="css/layout.css">  
+ </head>
 <body>
   <div id="mainWrapper">
   <div id="interface" >
@@ -164,7 +37,7 @@
  document.getElementById("tetris").addEventListener("click", function()
     {
       flag=0;
-      console.log(flag);
+     
       var menu=document.getElementById("interface");
       menu.style.visibility="hidden";
       Start();
@@ -172,7 +45,7 @@
   document.getElementById("tetris-plus").addEventListener("click", function()
     {
       flag=1;
-      console.log(flag);
+     
       var menu=document.getElementById("interface");
       menu.style.visibility="hidden";
        var div1=document.getElementById("menu-text-next");
@@ -181,6 +54,9 @@
        var div2=document.getElementById("showBoardWrapper");
       main.removeChild(div2);
       main.removeChild(div1);
+      var div =document.createElement("div");
+      div.innerHTML="press spacebar to change color";
+      main.appendChild(div);
       Start();
     });
   </script>
