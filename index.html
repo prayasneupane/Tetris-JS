@@ -5,21 +5,26 @@
 <body>
   <div id="mainWrapper">
     <div id="interface" >
-      <div id="tetris">Start Tetris</div>
-      <div id="tetris-plus">Start Tetris+</div>
+      <img src="images/pn_start.png">
+      <div id="tetris"><button class="button">Start Tetris</button></div>
+      <div id="tetris-plus"><button class="button">Start Tetris+</button></div>
     </div>  
-    <div id="side-Wrapper">
-      <div id="menu-text">Score</div>
+   
+      <div id="score"><img src="images/score.png" style="width:200px;height:50px">
       <div id="display-score"></div>
-      <div id="menu-text-next">NextPeice</div>
-      <div id="showBoardWrapper"></div>
-      <div id="menu-text"><a href="javascript:Pause();">Pause Game </a> </div>
+      </div>
+       --><!-- <div id="menu-text-next">NextPeice</div> -->
+      <div id="showBoardWrapper"><img src="images/next.png" style="width:200px;height:100px"></div>
+      <div id="menu-wrapper">
+        <ul>
+      <li><a class="button" href="javascript:Pause();">Pause Game </a></li>
      
-      <div id="menu-text"><a href="javascript:Restart();">Restart Game </a> </div>
-      <div id="gameOver"><p>GAME OVER!!!</p><a class="newgame" href="javascript:NewGame();">Click Here to Start New Game </a> </div>
+      <li><a class ="button" href="javascript:Restart();" >Restart Game </a></li>
+    </ul>
+      </div>
+     <div id="gameOver"><p>GAME OVER!!!</p><a class="newgame" href="javascript:NewGame();">Click Here to Start New Game </a> </div>
       <div id="pause"><p>PAUSED</p><a class="newgame" href="javascript:Resume();">Click Here to Resume </a></div>
-    </div>
-    
+ 
     <div id="boardWrapper"></div>
   </div>
   <script src="js/create.js"></script>
@@ -32,7 +37,7 @@
     var hwidth = 9; //number of columns
     var vheight = 15;
     var flag;
-    var board=new create();
+    var board=new Create();
     board.createBoard();
     board.createShowNextBoard();
     document.getElementById("tetris").addEventListener("click", function()

@@ -67,7 +67,7 @@ function MakeBlock()
 			
 			
 			
-			document.getElementById("img"+that.num[i]).setAttribute("src","images/blank.png");
+			document.getElementById("img"+that.num[i]).setAttribute("src","images/gray.png");
 		}
 	}
 
@@ -668,6 +668,9 @@ function MakeBlock()
     	
     	var str1=String(document.getElementById("img"+imageno).src);
 
+	    found=str1.search("blank.png");
+	    if(found == -1)
+	   {
     	for(var i=atc+1;i<hwidth;i++)
     	{
     		imagenum=formula.imagenumber(i,atr);
@@ -702,9 +705,10 @@ function MakeBlock()
     		if(index>=2)
     		{
     			that.imageToRmv[index ]=imageno;
+    			debugger;
     			that.removeLineHori();
     		}
-
+    	}
     }
     this.checkColorMatchVert=function(atr,atc,imageno)
     {
@@ -714,7 +718,9 @@ function MakeBlock()
     	var index=0;
     	
     	var str1=String(document.getElementById("img"+imageno).src);
-    	
+  		found=str1.search("blank.png");
+	    if(found == -1)
+	   	{  	
     	for(var i=atr+1;i<vheight;i++)
     	{
     		imagenum=formula.imagenumber(atc,i);
@@ -754,10 +760,10 @@ function MakeBlock()
     			 
     			
   				
-				
+				debugger;
     			that.removeLineVert();
     		}
-
+    	}
     }
    this.checkColorMatchDiag=function(atr,atc,imageno)
    {
@@ -879,7 +885,9 @@ function MakeBlock()
     	var rowUp;
     	var imgno;
     	var imgnoUp;
-    	
+    	that.score+=1;
+    	document.getElementById("display-score").innerHTML=that.score;
+    			
     		for(var i=0;i<that.imageToRmv.length;i++)
     		{
     			var imgno=that.imageToRmv[i];
@@ -890,6 +898,7 @@ function MakeBlock()
     			
     			
     			document.getElementById("img"+imgno).src=document.getElementById("img"+imgnoUp).src;
+    			
     			imgno-=hwidth;
     		}
     		}
@@ -901,9 +910,13 @@ function MakeBlock()
     	var rowUp;
     	var imgno;
     	var imgnoUp;
+    	that.score+=1;
+    	document.getElementById("display-score").innerHTML=that.score;
+    	
     	var attr=Math.max.apply(null, that.imageToRmv);
     	var imgno=attr;
-    			for(var j=vheight-1;j>=0;j--)
+
+    			for(var j=attr;j>=0;j--)
     		{
     			
     			var imgnoUp=imgno-that.imageToRmv.length*hwidth;

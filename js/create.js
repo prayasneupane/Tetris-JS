@@ -1,4 +1,4 @@
-function create()
+function Create()
 {
  
 	var that=this;
@@ -52,7 +52,7 @@ function create()
 			{
 				var c = document.createElement("TD");
 				var img = document.createElement("IMG");
-				img.setAttribute("src","images/blank.png");
+				img.setAttribute("src","images/gray.png");
 				img.setAttribute("id","img"+counter); 
 				c.appendChild(img);
 				
