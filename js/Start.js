@@ -7,7 +7,7 @@ function Start()
 {
 	var a=[1,2,3,4];//self initialization at first
   make.makeCurrentBlock(1,2,0,a);
-  
+  make.score=0;
     make.makeNextBlock(3);
   
    document.onkeydown = checkKey;
@@ -94,18 +94,42 @@ function Restart()
   var t1=document.getElementById("table2");
   div.removeChild(t);
   div1.removeChild(t1);
-  
+   var div1=document.getElementById("pause");
+  div1.style.visibility="hidden";
+
+ 
   board.createBoard();
   board.createShowNextBoard();
-  make.score=0;
+  
   document.getElementById("display-score").innerHTML=0;
   Start();
 }
 function NewGame()
 {
-  Restart();
-  //var main=document.getElementById("mainWrapper");
   var div2=document.getElementById("gameOver");
-  div2.style.display="none";
-  Start();
+  div2.style.visibility="hidden";
+  Restart();
+  
+  
+}
+function retMain()
+{
+
+  var div=document.getElementById("boardWrapper");
+  var div1=document.getElementById("showBoardWrapper");
+ 
+   var t=document.getElementById("table1");
+  var t1=document.getElementById("table2");
+  div.removeChild(t);
+  div1.removeChild(t1);
+  var div1=document.getElementById("pause");
+  div1.style.visibility="hidden";
+
+   var menu=document.getElementById("interface");
+   menu.style.visibility="visible";
+     board.createBoard();
+  board.createShowNextBoard();
+var make=new MakeBlock();
+ document.getElementById("display-score").innerHTML=0;
+       
 }

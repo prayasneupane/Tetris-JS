@@ -73,15 +73,16 @@ table
   {
     position: absolute;
     z-index: 5;
-    width:200px;
+    width:250px;
     height:300px;
-    top:100px;
-    left:50px;
+    top:25%;
+    left:10%;
     font-size: 50px;
     font-weight: bolder;
     background-color: grey;
     border:2px solid red;
     visibility: hidden;
+    text-align: center;
   }
   #pause
   {
@@ -89,13 +90,18 @@ table
     z-index: 5;
     width:200px;
     height:200px;
-    top:150px;
-    left:300px;
+    top:25%;
+    left:35%;
     font-size: 50px;
     font-weight: bolder;
-    background-color: grey;
-    border:2px solid red;
+    color:red;
+   
     visibility: hidden;
+  }
+  #pause ul li
+  {
+    margin-top: 10px;
+    list-style-type: none;
   }
   #interface
   {
@@ -112,11 +118,7 @@ table
   }
   
  
-  .newgame
-  {
-    
-    font-size: 16px;
-  }
+ 
   #tetris
   {
     position: absolute;
@@ -141,6 +143,17 @@ table
   
     font-weight: bolder;
     font-size: 32px;
+  }
+ .diff
+  {
+    font-size: 20px;
+    border-top: 1px solid #96d1f8;
+      padding: 5px 10px;
+       text-decoration: none;
+   vertical-align: middle;
+   border-radius: 8px;
+   background: #28597a;
+   color: #ccc;
   }
   .button {
    border-top: 1px solid #96d1f8;

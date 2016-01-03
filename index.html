@@ -13,7 +13,7 @@
       <div id="score"><img src="images/score.png" style="width:200px;height:50px">
       <div id="display-score"></div>
       </div>
-       --><!-- <div id="menu-text-next">NextPeice</div> -->
+
       <div id="showBoardWrapper"><img src="images/next.png" style="width:200px;height:100px"></div>
       <div id="menu-wrapper">
         <ul>
@@ -22,8 +22,13 @@
       <li><a class ="button" href="javascript:Restart();" >Restart Game </a></li>
     </ul>
       </div>
-     <div id="gameOver"><p>GAME OVER!!!</p><a class="newgame" href="javascript:NewGame();">Click Here to Start New Game </a> </div>
-      <div id="pause"><p>PAUSED</p><a class="newgame" href="javascript:Resume();">Click Here to Resume </a></div>
+     <div id="gameOver"><p>GAME OVER!!!</p><a class="button" href="javascript:NewGame();"> New Game </a> </div>
+      <div id="pause"><p>PAUSED!!!</p>
+        <ul>
+        <li>  <a class="button" href="javascript:Resume();"> Resume </a></li>
+        <li> <a class="diff" href="javascript:retMain();">Return to Main</a></li>
+      </ul>
+      </div>
  
     <div id="boardWrapper"></div>
   </div>
@@ -43,7 +48,7 @@
     document.getElementById("tetris").addEventListener("click", function()
       {
         flag=0;
-       
+      
         var menu=document.getElementById("interface");
         menu.style.visibility="hidden";
         Start();
@@ -51,17 +56,14 @@
     document.getElementById("tetris-plus").addEventListener("click", function()
       {
         flag=1;
-       
-        var menu=document.getElementById("interface");
+          var menu=document.getElementById("interface");
         menu.style.visibility="hidden";
-         
+          Start();
         
-        var main=document.getElementById("side-Wrapper");
+        var main=document.getElementById("menu-wrapper");
          
-        var div =document.createElement("div");
-        div.innerHTML="press spacebar to change color";
-        main.appendChild(div);
-        Start();
+       
+       
       });
   </script>
 

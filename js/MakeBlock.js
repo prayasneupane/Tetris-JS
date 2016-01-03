@@ -104,7 +104,7 @@ function MakeBlock()
 
 	         no = tests.search("blank.png");
 	         
-	         if (no>=0) 
+	         if (no>-1) 
 	        {
 	            if(flag==0)
 	            {
@@ -124,6 +124,7 @@ function MakeBlock()
 	        }
 	         else
 	        {	
+
 	        	clearInterval(intervalId);
 	        	var div1=document.getElementById("gameOver");
 	        	
@@ -607,13 +608,36 @@ function MakeBlock()
     	
     	
     	var imgno;
+    	function fadeOutEffect(element)
+    	{
+    		var fadeTarget =element;
+    		var fadeEffect = setInterval(function ()
+    		{
+        		if (!fadeTarget.style.opacity) 
+        		{
+            		fadeTarget.style.opacity = 1;
+        		}
+        		if (fadeTarget.style.opacity < 0.1) 
+        		{
+            		clearInterval(fadeEffect);
+            		
+        		}
+        		else 
+        		{
+            		fadeTarget.style.opacity -= 0.1;
+        		}
+    		}, 10);
+    	}
     	for(var k=0;k<that.line.length;k++)
     	{
     	for(var i=0;i<hwidth;i++)
     	{
     		imgno=formula.imagenumber(i,that.line[k]);
     		
-    		document.getElementById("img"+imgno).src="images/animation.gif";
+		
+
+    		var element=document.getElementById("img"+imgno);
+    		fadeOutEffect(element);
 
     	}
     	}
@@ -640,7 +664,8 @@ function MakeBlock()
     	{
     		that.score+=8;
     	}
-
+    	var audio = new Audio('audio/audio1.mp3');
+			audio.play();
     	document.getElementById("display-score").innerHTML=that.score;
     	for (var k=0;k<temp.length;k++)
     	{
@@ -653,6 +678,7 @@ function MakeBlock()
     			//replace current row to remove by upper ones
     			
     			document.getElementById("img"+imgno).src=document.getElementById("img"+imgnoUp).src;
+    			document.getElementById("img"+imgno).style.opacity=1;
     		}
     	}
     	}
@@ -705,7 +731,7 @@ function MakeBlock()
     		if(index>=2)
     		{
     			that.imageToRmv[index ]=imageno;
-    			debugger;
+    			
     			that.removeLineHori();
     		}
     	}
@@ -887,7 +913,9 @@ function MakeBlock()
     	var imgnoUp;
     	that.score+=1;
     	document.getElementById("display-score").innerHTML=that.score;
-    			
+    		var audio = new Audio('audio/audio1.mp3');
+			audio.play();
+    	
     		for(var i=0;i<that.imageToRmv.length;i++)
     		{
     			var imgno=that.imageToRmv[i];
@@ -915,7 +943,9 @@ function MakeBlock()
     	
     	var attr=Math.max.apply(null, that.imageToRmv);
     	var imgno=attr;
-
+    		var audio = new Audio('audio/audio1.mp3');
+			audio.play();
+    
     			for(var j=attr;j>=0;j--)
     		{
     			
