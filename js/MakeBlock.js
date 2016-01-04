@@ -52,7 +52,7 @@ function MakeBlock()
 	   		{
 	   			
 					
-					that.nextcolorArr[i]=Math.floor(Math.random()*6);
+					that.nextcolorArr[i]=Math.floor(Math.random()*7);
 					document.getElementById("img"+imagenum).setAttribute("src",formula.blockimages[that.nextcolorArr[i]]);
 				
 	   		}
@@ -126,6 +126,9 @@ function MakeBlock()
 	        {	
 
 	        	clearInterval(intervalId);
+	        	var audio = new Audio('audio/audio1.mp3');
+				audio.play();
+    
 	        	var div1=document.getElementById("gameOver");
 	        	
 	        	div1.style.visibility="visible";
@@ -327,8 +330,8 @@ function MakeBlock()
 	    			
 	this.callNextPiece=function()
 	{
-		var type=Math.floor(Math.random()*6);
-	    var col=Math.floor(Math.random()*5);
+		var type=Math.floor(Math.random()*7);
+	    var col=Math.floor(Math.random()*6);
 	    
 	  
 	    	that.makeCurrentBlock(that.nexttypenum,col,0,that.nextcolorArr);
@@ -786,7 +789,7 @@ function MakeBlock()
     			 
     			
   				
-				debugger;
+				
     			that.removeLineVert();
     		}
     	}
@@ -845,7 +848,7 @@ function MakeBlock()
 	    			 
 	    			
 	  				
-					debugger;
+					
 	    			that.removeLineHori();
 	    		}
 	    }
@@ -899,7 +902,7 @@ function MakeBlock()
 	    			that.imageToRmv[index]=imageno;
 	    			 
 	    			
-	  				debugger;
+	  			
 					
 	    			that.removeLineHori();
 	    		}

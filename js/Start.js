@@ -5,14 +5,17 @@ var intervalId;
  
 function Start()
 {
-	var a=[1,2,3,4];//self initialization at first
-  make.makeCurrentBlock(1,2,0,a);
+  var inittype=Math.floor(Math.random()*7);
+  var initcol=Math.floor(Math.random()*6);
+      
+	var initcolor=[1,2,3,4];//self initialization at first
+  make.makeCurrentBlock(inittype,initcol,0,initcolor);
   make.score=0;
-    make.makeNextBlock(3);
+    make.makeNextBlock(inittype);
   
    document.onkeydown = checkKey;
-  		function checkKey(e)
-  		{
+  	function checkKey(e)
+  	{
 
     	e = e || window.event;
 
@@ -45,9 +48,13 @@ function Start()
        // right arrow
        make.movesideways(1);
     	}
+      else if(e.keyCode == '27')
+      {
+        Pause();
+      }
 
 		}
-      var flaginterval =0;
+    var flaginterval =0;
 		var temp;
   function movedown()
   	{
@@ -73,9 +80,9 @@ intervalId=setInterval(movedown,duration);
 }
 function Pause()
 {
-window.clearInterval(intervalId);
-var div1=document.getElementById("pause");
-div1.style.visibility="visible";
+  window.clearInterval(intervalId);
+  var div1=document.getElementById("pause");
+  div1.style.visibility="visible";
 }
             
 
