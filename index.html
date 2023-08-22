@@ -4,10 +4,21 @@
  </head>
 <body>
   <div id="mainWrapper">
+    <div id = "popup" ><div id = "instruction-popup">
+     <h2> Instructions</h2>
+     <p>Left arrow = move piece left.<br><br>
+      Right arrow = move piece right.<br><br>
+      Down arrow = soft drop.<br><br>
+      Up arrow = rotate piece.
+     </p>
+     <div id="popup-close"><img src="https://www.abiinteriors.com.au/wp-content/themes/abi22/abi-components/assets/icons/Close.svg"></div>
+    </div>
+    </div>
     <div id="interface" >
       <img src="images/pn_start.png">
       <div id="tetris"><button class="button">Start Tetris</button></div>
       <div id="tetris-plus"><button class="button">Start Tetris+</button></div>
+      <div id="instructions"><button class="button">Instructions</button></div>
     </div>  
    
       <div id="score"><img src="images/score.png" style="width:200px;height:50px">
@@ -64,6 +75,16 @@
          
        
        
+      });
+    document.getElementById("instructions").addEventListener("click", function()
+      {
+        var instruction=document.getElementById("popup");
+        instruction.style.display="block";
+      });
+      document.getElementById("popup-close").addEventListener("click", function()
+      {
+        var instruction=document.getElementById("popup");
+        instruction.style.display="none";
       });
   </script>
 
